@@ -42,7 +42,7 @@
         .main-layout { display: grid; grid-template-columns: 260px 1fr; min-height: 700px; position: relative; }
 
         aside { background: #fff9fb; border-right: 2px solid var(--dark-pink); padding: 20px; text-align: center; }
-        .profile-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border:none; padding: 4px; background: white; }
+        .profile-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border:none ; padding: 4px; background: white; }
 
         main { padding: 25px; background: white; overflow-y: auto; }
         .page { display: none; }
@@ -291,19 +291,13 @@
         .textarea-box { width: 100%; border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px; font-family: inherit; }
 
         /* Photo Wall 橫向展示 */
-       .photo-wall {
-    display: flex;
-    flex-wrap: wrap; /* 這一行讓圖片可以換行，不會擠在同一排 */
-    gap: 5px;
-    margin-top: 10px;
-}
-
-.photo-item {
-    width: 30%; /* 這一行限制了圖片寬度，讓一排剛好放約三張 */
-    aspect-ratio: 1; /* 這行維持了正方形 */
-    object-fit: cover;
-    border-radius: 5px;
-}
+        .photo-wall {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
         .deco-img {
             width: 80px;
@@ -409,8 +403,8 @@
     </nav>
 
     <div class="main-layout">
-        <aside style="text-align: center;">
-            <img id="side-avatar" src="https://i.imgur.com/8N7mY9R.png" class="profile-img" style="cursor: not-allowed; opacity: 0.8;">     
+        <aside>
+            <aside style="text-align: center;"> <img id="side-avatar" src="https://i.imgur.com/8N7mY9R.png" class="profile-img" style="cursor: not-allowed; opacity: 0.8;">
     <h3 id="side-name" style="margin: 10px 0; color: var(--dark-pink);">User</h3>
     
     <div style="font-size: 11px; text-align: center; background: white; border: 1px solid #eee; padding: 10px; border-radius: 5px;">
