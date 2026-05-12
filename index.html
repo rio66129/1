@@ -279,15 +279,17 @@
 
         /* 按鈕樣式 */
         .pixel-btn { 
-            background: white; 
-            border: 2px solid var(--dark-pink); 
-            padding: 8px 15px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 12px; 
-            transition: 0.2s;
-            border-radius: 6px;
-        }
+    background: white; 
+    border: 2px solid var(--dark-pink); 
+    padding: 8px 15px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    font-size: 12px; 
+    transition: 0.2s;
+    border-radius: 6px;
+    color: var(--text-gray); /* 確保文字顏色跟隨您的設定，不被系統預設藍色覆蓋 */
+    text-decoration: none;   /* 移除可能的底線 */
+}
         .pixel-btn:hover { background: var(--main-pink); }
         .pixel-btn-add { 
             background: var(--main-pink); 
