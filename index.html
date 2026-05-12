@@ -71,9 +71,23 @@
 
         /* 儲蓄頁面優化 */
         .savings-header { display: flex; justify-content: space-between; align-items: center; }
-        .settings-icon { cursor: pointer; font-size: 20px; color: var(--dark-pink); transition: transform 0.3s; }
-        .settings-icon:hover { transform: rotate(45deg); }
+        .settings-icon { 
+    cursor: pointer; 
+    /* 強制固定大小 */
+    width: 18px;         
+    height: 18px;        
+    /* 確保圖片縮小時不失真或變形 */
+    object-fit: contain; 
+    /* 保持原有的旋轉動畫 */
+    transition: transform 0.3s; 
+    /* 修正圖片與文字對齊的位置 */
+    vertical-align: sub; 
+    display: inline-block;
+}
 
+.settings-icon:hover { 
+    transform: rotate(45deg); 
+}
         .status-window { background: #fff; border: 2px solid var(--dark-pink); border-radius: 15px; padding: 15px; margin-bottom: 20px; position: relative; }
         .motto-text { font-size: 11px; color: #888; margin: 5px 0 10px 0; font-style: italic; display: block; text-align: center; border-top: 1px dotted #eee; padding-top: 5px; }
 
@@ -427,7 +441,7 @@
                 <div class="home-sections">
                     <!-- 左上區 - 個人介紹 -->
                     <div class="section-box">
-                        <div class="section-title">📝 Introduction</div>
+                        <div class="section-title">✦ Introduction ✦</div>
                         <div class="intro-card">
                             <h4>Hi! I'm Rio</h4>
                             <p>This is my personal space where I share my thoughts, dreams, and daily savings journey.</p>
@@ -440,7 +454,7 @@
 
                     <!-- 右上區 - 快速連結 & 訪客數 -->
                     <div class="section-box">
-                        <div class="section-title">🔗 Quick Links</div>
+                        <div class="section-title">✦ Quick Links ✦</div>
                         <div class="status-item">
                             <span>Visitor Count:</span>
                             <span id="visitor-count">0</span>
@@ -452,7 +466,7 @@
 
                     <!-- 左下區 - 最新儲蓄進度 -->
                     <div class="section-box">
-                        <div class="section-title">✦ Savings Progress</div>
+                        <div class="section-title">✦ Savings Progress ✦</div>
                         <div class="progress-bar-bg" style="height: 20px;">
                             <div id="home-p-bar" class="progress-bar-fill" style="width: 0%;"></div>
                         </div>
@@ -468,7 +482,7 @@
 
                     <!-- 右下區 - 最新 Blog -->
                     <div class="section-box">
-                        <div class="section-title">✦ Latest Blog</div>
+                        <div class="section-title">✦ Latest Blog ✦</div>
                         <div style="font-size: 12px; line-height: 1.6;">
                             <div style="margin-bottom: 8px;">
                                 <span class="blog-tag">Life</span>
@@ -502,7 +516,7 @@
 
             <!-- BLOG 頁面 -->
             <div id="blog" class="page">
-                <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">📖 Blog Posts</h2>
+                <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">★ Blog Posts</h2>
                 
                 <button class="pixel-btn-add" onclick="openNewPostModal()" style="margin-bottom: 20px;">+</button>
                 
@@ -568,10 +582,11 @@
             <!-- SAVINGS 頁面 -->
             <div id="savings" class="page">
                 <div class="savings-header">
-                    <h3 style="margin:0;">💰 Savings Station</h3>
-                    <span class="settings-icon" onclick="openSavingsModal()">⚙️</span>
+                    <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">★ Saving Satation ★</h2>
+                    <img src="setting.png" class="settings-icon" onclick="openSavingsModal()" alt="Settings">
                 </div>
-                
+                <span id="motto-display" class="motto-text">"Keep saving, dreams come true!"</span>
+                <br>
                 <div class="status-window">
                     <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
                         <span>Progress: <span id="p-text">0%</span></span>
@@ -581,7 +596,6 @@
                     <div class="progress-bar-bg">
                         <div id="p-bar" class="progress-bar-fill"></div>
                     </div>
-                    <span id="motto-display" class="motto-text">"Keep saving, dreams come true!"</span>
                 </div>
 
                 <h4>Quick Add</h4>
