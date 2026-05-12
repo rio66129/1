@@ -62,25 +62,6 @@
         .status-item:last-child { border-bottom: none; }
         .status-label { font-weight: bold; color: var(--dark-pink); }
 
-        /* Social 欄美化 */
-        .social-section { border: 2px solid var(--light-green); border-radius: 12px; padding: 12px; background: #f0fff0; margin-top: 12px; }
-        .social-title { background: var(--light-green); color: white; padding: 6px 10px; border-radius: 6px; font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; }
-        .social-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .social-btn { 
-            border: 2px solid var(--light-green); 
-            border-radius: 10px; 
-            background: white; 
-            padding: 12px; 
-            cursor: pointer; 
-            transition: 0.2s;
-            text-align: center;
-            font-size: 11px;
-            font-weight: bold;
-            color: var(--text-gray);
-        }
-        .social-btn:hover { background: var(--light-green); transform: scale(1.05); }
-        .social-icon { font-size: 24px; margin-bottom: 4px; }
-
         /* Blog 風格組件 */
         .blog-post { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 20px; position: relative; transition: 0.2s; }
         .blog-post:hover { border-color: var(--dark-pink); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -309,23 +290,32 @@
         .input-box { width: 100%; border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px; }
         .textarea-box { width: 100%; border: 1px solid #ddd; padding: 8px; margin: 5px 0; border-radius: 5px; font-family: inherit; }
 
-        /* 修正後的 Photo Wall 圖片樣式 */
-.deco-img {
-    width: 100px;         /* 固定寬度 */
-    height: 100px;        /* 固定高度 */
-    object-fit: cover;    /* 重要：保持比例縮放並填滿範圍，不變形 */
-    padding: 2px;
-    background: white;
-    cursor: pointer;
-    transition: 0.3s;
-    display: block;       /* 確保 margin 運作正常 */
-    margin: 0 auto;       /* 居中 */
-}
+        /* Photo Wall 橫向展示 */
+        .photo-wall {
+            margin-top: 20px;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-.deco-img:hover {
-    transform: scale(1.1) rotate(0deg) !important; /* 懸停時放大並擺正 */
-    z-index: 10;
-}
+        .deco-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            padding: 2px;
+            background: white;
+            cursor: pointer;
+            transition: 0.3s;
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .deco-img:hover {
+            transform: scale(1.1) !important;
+            z-index: 10;
+        }
 
         /* 響應式設計 - 手機版優化 */
         @media (max-width: 768px) {
@@ -351,19 +341,14 @@
             
             .profile-img { max-width: 80px; margin: 0 auto; }
             
+            .photo-wall {
+                gap: 6px;
+            }
+            
             .deco-img {
-                width: 60px;
-                height: 60px;
+                width: 70px;
+                height: 70px;
             }
-            
-            .social-btn { 
-                padding: 8px;
-                font-size: 10px;
-            }
-            .social-icon { font-size: 18px; margin-bottom: 2px; }
-            
-            .social-section { padding: 8px; margin-top: 8px; }
-            .social-title { padding: 4px 8px; font-size: 11px; }
             
             /* 簡化導覽列 */
             nav { padding: 8px; gap: 5px; }
@@ -390,8 +375,8 @@
             .profile-img { max-width: 70px; }
             
             .deco-img {
-                width: 50px;
-                height: 50px;
+                width: 60px;
+                height: 60px;
             }
             
             nav { padding: 6px; gap: 3px; }
@@ -427,33 +412,9 @@
             </div>
             
             <!-- Photo Wall -->
-            <div style="margin-top:20px;">
-                <p style="font-size:10px; color:#888; margin: 0 0 8px 0;">Photo Wall</p>
-                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img" style="transform: rotate(-5deg);" onclick="alert('Edit in Settings →')">
-                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img" style="transform: rotate(5deg); margin-top:-20px;" onclick="alert('Edit in Settings →')">
-            </div>
-
-            <!-- Social 欄 -->
-            <div class="social-section">
-                <div class="social-title">Social Links</div>
-                <div class="social-grid">
-                    <button class="social-btn" onclick="openSocialLink(0)">
-                        <div class="social-icon">🐦</div>
-                        <div id="social-label-0">Twitter</div>
-                    </button>
-                    <button class="social-btn" onclick="openSocialLink(1)">
-                        <div class="social-icon">📱</div>
-                        <div id="social-label-1">TikTok</div>
-                    </button>
-                    <button class="social-btn" onclick="openSocialLink(2)">
-                        <div class="social-icon">📷</div>
-                        <div id="social-label-2">Instagram</div>
-                    </button>
-                    <button class="social-btn" onclick="openSocialLink(3)">
-                        <div class="social-icon">▶️</div>
-                        <div id="social-label-3">YouTube</div>
-                    </button>
-                </div>
+            <div class="photo-wall">
+                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img" onclick="alert('Edit in Settings →')">
+                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img" onclick="alert('Edit in Settings →')">
             </div>
         </aside>
 
