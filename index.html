@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" sizes="152x152" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <meta name="mobile-web-app-capable" content="yes">
@@ -848,14 +849,17 @@
     }
 
     function addMoney(desc, amt) {
-        state.total += amt;
-        state.history.unshift({
-            date: new Date().toLocaleDateString('en-US', {month:'2-digit', day:'2-digit'}),
-            desc: desc,
-            amt: amt
-        });
-        saveAndRefresh();
-    }
+    state.total += amt;
+    const now = new Date();
+    state.history.unshift({
+        // 同時保存日期與具體時間
+        date: now.toLocaleDateString('en-US', {month:'2-digit', day:'2-digit'}),
+        time: now.toLocaleTimeString('en-US', {hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit'}),
+        desc: desc,
+        amt: amt
+    });
+    saveAndRefresh();
+}
 
     function addMoneyByIndex(index) {
         const opt = state.options[index];
@@ -1063,11 +1067,11 @@
         const receiptList = document.getElementById('receipt-list');
         if (receiptList) {
             receiptList.innerHTML = state.history.map(h => `
-                <div style="display:flex; justify-content:space-between;">
-                    <span>${h.date} ${h.desc}</span>
-                    <span>+$${h.amt}</span>
-                </div>
-            `).join('');
+    <div style="display:flex; justify-content:space-between; margin-bottom: 2px;">
+        <span>${h.date} <small style="color:#888">${h.time || ''}</small> ${h.desc}</span>
+        <span>+$${h.amt}</span>
+    </div>
+`).join('');
         }
     }
 </script>
