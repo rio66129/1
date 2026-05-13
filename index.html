@@ -86,6 +86,35 @@
     display: inline-block;
 }
 
+.time-box {
+    background: white;
+    /* 調整為與左側白框一致的淡灰色邊框 */
+    border: 1px solid #ddd; 
+    border-radius: 8px;
+    /* 增加內距並固定寬度，確保長度統一 */
+    padding: 8px 4px;
+    min-width: 35px; 
+    /* 放大字體 */
+    font-size: 24px; 
+    font-weight: bold;
+    color: var(--dark-pink);
+    display: inline-block;
+    text-align: center;
+    /* 移除陰影以保持簡潔 */
+    box-shadow: none; 
+}
+
+.time-separator {
+    /* 分隔符號同步放大 */
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--dark-pink);
+    margin: 0 2px;
+    /* 確保與方框對齊 */
+    line-height: 45px; 
+    vertical-align: middle;
+}
+
 .settings-icon:hover { 
     transform: rotate(45deg); 
 }
@@ -455,17 +484,21 @@
                         </div>
                     </div>
 
-                    <!-- 右上區 - 快速連結 & 訪客數 -->
-                    <div class="section-box">
-                        <div class="section-title">✦ Quick Links ✦</div>
-                        <div class="status-item">
-                            <span>Visitor Count:</span>
-                            <span id="visitor-count">0</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 12px;">
-                            <button class="pixel-btn" style="width: 100%; margin-bottom: 5px;">View More →</button>
-                        </div>
-                    </div>
+                    <!-- 右上區 - 時間倒數 -->
+  <div class="section-box">
+    <div class="section-title">✦ Sunday Countdown ✦</div>
+    <div style="text-align: center; padding: 10px 0;">
+        <div id="countdown-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Courier New', monospace; padding: 10px 0;">
+    </div>
+        <p style="font-size: 10px; color: #888; margin-top: 10px;">until next Sunday ✨</p>
+    </div>
+</div>
+
+<div class="section-box">
+    <div class="section-title">✦ Introduction ✦</div>
+    <div id="intro-display" style="font-size: 12px; line-height: 1.6; white-space: pre-wrap;">
+        </div>
+</div>
 
                     <!-- 左下區 - 最新儲蓄進度 -->
                     <div class="section-box">
@@ -641,6 +674,12 @@
                     <textarea id="set-bio" class="textarea-box" rows="3"></textarea>
 
                     <button class="pixel-btn" style="margin-top:10px; width:100%;" onclick="saveProfile()">Save Changes</button>
+                
+                    <div style="margin-bottom: 15px;">
+    <p style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Edit Introduction:</p>
+    <textarea id="intro-input" style="width: 100%; height: 80px; padding: 5px; border-radius: 5px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none;"></textarea>
+    <button onclick="updateIntro()" style="margin-top: 5px; background: var(--dark-pink); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Update Intro</button>
+</div>
                 </div>
             </div>
         </main>
@@ -764,7 +803,6 @@
             {desc: "Dinner", amt: 150}
         ],
         history: [],
-        visitorCount: 0,
         blogPosts: [],
         decoImages: {
             deco1: "https://i.imgur.com/f0f456.png",
@@ -793,37 +831,66 @@
 
     // 修改 window.onload
  window.onload = () => {
-    // 監聽 Firebase 
-    onValue(window.dataRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-        // Merge cloud data with local defaults to ensure all arrays exist
-        state = {
-            ...state, // keep defaults
-            ...data,  // overwrite with cloud data
-            // Explicitly ensure arrays exist if they might be missing in DB
-            blogPosts: data.blogPosts || [],
-            options: data.options || [],
-            history: data.history || [],
-            yume: data.yume || state.yume,
-            decoImages: data.decoImages || state.decoImages
-        }; 
-        console.log("Synced from Firebase:", state);
-        refreshUI();  
-    } else {
-        saveAndRefresh();
+    // 1. 監聽 Firebase 資料更新
+    if (window.onValue && window.dataRef) {
+        window.onValue(window.dataRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // 合併雲端資料並確保陣列結構完整
+                state = {
+                    ...state, 
+                    ...data,
+                    blogPosts: data.blogPosts || [],
+                    options: data.options || [],
+                    history: data.history || [],
+                    yume: data.yume || state.yume,
+                    decoImages: data.decoImages || state.decoImages,
+                    intro: data.intro || state.intro // 確保同步 Introduction 文字
+                }; 
+                console.log("Synced from Firebase:", state);
+                refreshUI();  
+            } else {
+                saveAndRefresh();
+            }
+        });
     }
-});
+
+    // 2. 啟動週日倒計時（放在監聽器外，只執行一次）
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 };
 
-    // 訪客計數
-    setTimeout(() => {
-        if (state) {
-            state.visitorCount = (state.visitorCount || 0) + 1;
-            saveAndRefresh();
-        }
-    }, 2000);
 
+// 倒計時邏輯
+function updateCountdown() {
+    const now = new Date();
+    let daysUntilSunday = (7 - now.getDay()) % 7;
+    if (daysUntilSunday === 0) daysUntilSunday = 7; 
+
+    const nextSunday = new Date();
+    nextSunday.setDate(now.getDate() + daysUntilSunday);
+    nextSunday.setHours(0, 0, 0, 0);
+
+    const diff = nextSunday - now;
+    const container = document.getElementById('countdown-container');
+    if (!container) return;
+
+    if (diff > 0) {
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24)).toString();
+        const h = Math.floor((diff / (1000 * 60 * 60)) % 24).toString().padStart(2, '0');
+        const m = Math.floor((diff / (1000 * 60)) % 60).toString().padStart(2, '0');
+        const s = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+
+        const createBox = (num) => `<span class="time-box">${num}</span>`;
+        
+        container.innerHTML = `
+            ${createBox(d)}<span class="time-separator" style="color: #888;">d</span>
+            ${createBox(h[0])}${createBox(h[1])}<span class="time-separator">:</span>
+            ${createBox(m[0])}${createBox(m[1])}<span class="time-separator">:</span>
+            ${createBox(s[0])}${createBox(s[1])}
+        `;
+    }
+}
 
     function showPage(id, btn) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -1098,7 +1165,6 @@ function deleteOption(index) {
 
         // HOME 頁面
         document.getElementById('home-status').innerText = state.status;
-        document.getElementById('visitor-count').innerText = state.visitorCount;
         document.getElementById('motto-display').innerText = `"${state.motto}"`;
 
         // 儲蓄進度
@@ -1137,6 +1203,16 @@ function deleteOption(index) {
                     addMoneyByIndex(index);
                 });
             });
+            const introDisplay = document.getElementById('intro-display');
+    if (introDisplay) {
+        introDisplay.innerText = state.intro || "Welcome to my space!";
+    }
+    
+    // 更新 Settings 裡的輸入框，確保文字同步
+    const introInput = document.getElementById('intro-input');
+    if (introInput) {
+        introInput.value = state.intro || "";
+    }
         }
 
         // 類別管理 - Using data attributes and event listeners
