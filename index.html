@@ -431,8 +431,8 @@
             
             <!-- Photo Wall -->
             <div class="photo-wall">
-                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img" onclick="alert('Edit in Settings →')">
-                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img" onclick="alert('Edit in Settings →')">
+                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img" onclick="showNotice('Edit in Settings →')">
+                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img" onclick="showNotice('Edit in Settings →')">
             </div>
         </aside>
 
@@ -684,6 +684,17 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="notice-modal">
+    <div class="modal-content" style="max-width: 300px; text-align: center;">
+        <div class="modal-header">
+            <h3 id="notice-title">Notice</h3>
+            <span class="close-btn" onclick="closeModal('notice-modal')">×</span>
+        </div>
+        <p id="notice-message" style="font-size: 14px; margin: 20px 0;"></p>
+        <button class="pixel-btn" style="width: 100%;" onclick="closeModal('notice-modal')">OK</button>
+    </div>
+</div>
+
 <!-- Modal: Savings 設定 -->
 <div class="modal-overlay" id="savings-modal">
     <div class="modal-content">
@@ -770,30 +781,46 @@
     let currentYumeUploadId = null;
 
     // 修改 window.onload
-window.onload = () => {
-    // 監聽 Firebase 資料變動
+ window.onload = () => {
+    // 1. 監聽 Firebase 資料
     onValue(window.dataRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            state = data; // 將雲端資料同步至本地 state
+            // 重要：用雲端資料覆蓋本地 state
+            state = data;
             
-            // 同步表單輸入框
-            document.getElementById('set-name').value = state.name;
-            document.getElementById('set-motto').value = state.motto;
-            document.getElementById('set-status').value = state.status;
-            document.getElementById('set-bio').value = state.bio;
-            document.getElementById('avatar-preview').src = state.avatar;
-            document.getElementById('target-input').value = state.target;
+            // 同步所有輸入框內容，避免刷新後 input 變空
+            const fieldMap = {
+                'set-name': state.name,
+                'set-motto': state.motto,
+                'set-status': state.status,
+                'set-bio': state.bio,
+                'target-input': state.target
+            };
+            for (let id in fieldMap) {
+                const el = document.getElementById(id);
+                if (el) el.value = fieldMap[id] || '';
+            }
+
+            // 更新頭像預覽
+            const avatarPre = document.getElementById('avatar-preview');
+            if (avatarPre) avatarPre.src = state.avatar || 'default-avatar.png';
             
             loadYumeImages();
-            refreshUI(); // 重新渲染畫面
+            refreshUI(); // 確保資料到位後才渲染 UI (含 Quick Add 按鈕)
+            console.log("Data synced from Firebase.");
+        } else {
+            // 如果雲端完全沒資料，才初始化存入預設值
+            saveAndRefresh();
         }
     });
 
-    // 訪客數計算 (建議只在首次載入觸發一次)
+    // 訪客計數
     setTimeout(() => {
-        state.visitorCount = (state.visitorCount || 0) + 1;
-        saveAndRefresh();
+        if (state) {
+            state.visitorCount = (state.visitorCount || 0) + 1;
+            saveAndRefresh();
+        }
     }, 2000);
 };
 
@@ -837,7 +864,7 @@ window.onload = () => {
         const content = document.getElementById('post-content').value.trim();
 
         if (!title || !content) {
-            alert('Title and content are required!');
+            showNotice('Title and content are required!');
             return;
         }
 
@@ -853,7 +880,7 @@ window.onload = () => {
         state.blogPosts.unshift(post);
         saveAndRefresh();
         closeModal('new-post-modal');
-        alert('Post published!');
+        showNotice('Post published!');
     }
 
     function deletePost(postId) {
@@ -869,14 +896,14 @@ window.onload = () => {
         const amount = parseInt(document.getElementById('category-amount').value);
 
         if (!name || !amount || amount <= 0) {
-            alert('Please fill in valid information!');
+            showNotice('Please fill in valid information!');
             return;
         }
 
         state.options.push({desc: name, amt: amount});
         saveAndRefresh();
         closeModal('add-category-modal');
-        alert('Category added!');
+        showNotice('Category added!');
     }
 
     function deleteOption(index) {
@@ -921,7 +948,7 @@ window.onload = () => {
         const file = document.getElementById('avatar-file').files[0];
         if (file) {
             if (file.size > 500000) {
-                alert('File too large! Max 500KB');
+                showNotice('File too large! Max 500KB');
                 return;
             }
             const reader = new FileReader();
@@ -938,7 +965,7 @@ window.onload = () => {
         const file = document.getElementById(decoId + '-file').files[0];
         if (file) {
             if (file.size > 300000) {
-                alert('File too large! Max 300KB');
+                showNotice('File too large! Max 300KB');
                 return;
             }
             const reader = new FileReader();
@@ -959,7 +986,7 @@ window.onload = () => {
         const file = document.getElementById('yume-file-input').files[0];
         if (file && currentYumeUploadId) {
             if (file.size > 1000000) {
-                alert('File too large! Max 1MB');
+                showNotice('File too large! Max 1MB');
                 return;
             }
             const reader = new FileReader();
@@ -990,7 +1017,7 @@ window.onload = () => {
         state.status = document.getElementById('set-status').value;
         state.bio = document.getElementById('set-bio').value;
         saveAndRefresh();
-        alert("Profile updated!");
+        showNotice("Profile updated!");
     }
 
     // Social Links
@@ -999,7 +1026,7 @@ window.onload = () => {
         if (url) {
             window.open(url, '_blank');
         } else {
-            alert('Social link not set. Edit in Settings.');
+            alershowNoticet('Social link not set. Edit in Settings.');
         }
     }
 
@@ -1153,6 +1180,12 @@ window.onload = () => {
 `).join('');
         }
     }
+
+    function showNotice(title, message) {
+    document.getElementById('notice-title').innerText = title;
+    document.getElementById('notice-message').innerText = message;
+    openModal('notice-modal');
+}
 </script>
 </body>
 </html>
