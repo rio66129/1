@@ -91,7 +91,6 @@
     /* 調整為與左側白框一致的淡灰色邊框 */
     border: 1px solid #ddd; 
     border-radius: 8px;
-    /* 增加內距並固定寬度，確保長度統一 */
     padding: 8px 4px;
     min-width: 35px; 
     /* 放大字體 */
@@ -100,17 +99,14 @@
     color: var(--dark-pink);
     display: inline-block;
     text-align: center;
-    /* 移除陰影以保持簡潔 */
     box-shadow: none; 
 }
 
 .time-separator {
-    /* 分隔符號同步放大 */
     font-size: 20px;
     font-weight: bold;
     color: var(--dark-pink);
     margin: 0 2px;
-    /* 確保與方框對齊 */
     line-height: 45px; 
     vertical-align: middle;
 }
@@ -672,14 +668,13 @@
 
                     <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">About Me</label>
                     <textarea id="set-bio" class="textarea-box" rows="3"></textarea>
-
+                     <p style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Edit Introduction:</p>
+                    <textarea id="intro-input" style="width: 100%; height: 80px; padding: 5px; border-radius: 5px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none;"></textarea>
+  
                     <button class="pixel-btn" style="margin-top:10px; width:100%;" onclick="saveProfile()">Save Changes</button>
                 
                     <div style="margin-bottom: 15px;">
-    <p style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Edit Introduction:</p>
-    <textarea id="intro-input" style="width: 100%; height: 80px; padding: 5px; border-radius: 5px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none;"></textarea>
-    <button onclick="updateIntro()" style="margin-top: 5px; background: var(--dark-pink); color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">Update Intro</button>
-</div>
+
                 </div>
             </div>
         </main>
@@ -750,17 +745,7 @@
         <button class="pixel-btn" style="background:#fff0f0; width:100%; color:red; border-color:red; margin-top: 10px;" onclick="clearData()">Clear Savings</button>
     </div>
 </div>
-<div class="modal-overlay" id="notice-modal" style="display:none; z-index:9999;">
-    <div class="modal-content" style="max-width: 280px; text-align: center; border: 2px solid var(--dark-pink); padding:0;">
-        <div class="modal-header" style="background: var(--main-pink); padding: 5px; border-bottom: 2px solid var(--dark-pink);">
-            <span style="font-weight:bold; color:#4a4a4a; font-size:12px;">SYSTEM NOTICE</span>
-        </div>
-        <div style="padding: 20px; background: #fff;">
-            <p id="notice-message" style="font-size: 13px; margin-bottom: 15px; color: #4a4a4a; line-height:1.5;"></p>
-            <button class="pixel-btn" onclick="closeModal('notice-modal')" style="width: 80px; font-size:12px; padding:5px;">OK</button>
-        </div>
-    </div>
-</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -1097,14 +1082,21 @@ function deleteOption(index) {
     }
 
     // Profile 設定
-    function saveProfile() {
-        state.name = document.getElementById('set-name').value;
-        state.motto = document.getElementById('set-motto').value;
-        state.status = document.getElementById('set-status').value;
-        state.bio = document.getElementById('set-bio').value;
-        saveAndRefresh();
-        showNotice("Profile updated!");
-    }
+    // 請找到並替換為以下內容
+function saveProfile() {
+    state.name = document.getElementById('set-name').value;
+    state.motto = document.getElementById('set-motto').value;
+    state.status = document.getElementById('set-status').value;
+    state.bio = document.getElementById('set-bio').value;
+    
+    // 獲取 Introduction 內容
+    const introVal = document.getElementById('intro-input').value;
+    state.intro = introVal;
+
+    saveAndRefresh();
+    showNotice("Success", "Profile and Introduction updated!");
+}
+
 
     // Social Links
     function openSocialLink(index) {
