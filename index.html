@@ -887,25 +887,29 @@
 
     // Savings 功能
 function addNewCategory() {
-    const name = document.getElementById('new-opt-name').value;
-    const amount = parseInt(document.getElementById('new-opt-amt').value);
+    // 修正 ID：必須與 HTML 中的 <input id="category-name"> 一致
+    const nameEl = document.getElementById('category-name');
+    const amountEl = document.getElementById('category-amount');
+
+    if (!nameEl || !amountEl) {
+        console.error("找不到輸入框元素！");
+        return;
+    }
+
+    const name = nameEl.value;
+    const amount = parseInt(amountEl.value);
+
     if (name && !isNaN(amount)) {
         state.options.push({ desc: name, amt: amount });
         
-        // 關鍵修改：從 refreshUI() 改為 saveAndRefresh()
-        saveAndRefresh(); 
+        saveAndRefresh(); // 儲存並更新雲端
         
-        closeModal('add-modal');
-        // 建議加上自定義彈窗提示
-        showNotice("System", "Successfully added!");
+        closeModal('add-category-modal'); // 關閉彈窗
+        showNotice("Success", "Successfully added!");
     } else {
         showNotice("Error", "Please enter valid info!");
     }
 }
-    function deleteOption(index) {
-        state.options.splice(index, 1);
-        saveAndRefresh();
-    }
 
     function addMoney(desc, amt) {
     state.total += amt;
