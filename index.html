@@ -717,21 +717,32 @@ const db = firebase.database();
 
 // --- 修改原本的 window.onload ---
 window.onload = () => {
-    // 改從 Firebase 讀取資料
+    // 監聽 Firebase 資料
     db.ref('mySpaceData').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            state = data;
-            // 由於是非同步讀取，拿到資料後需手動更新 UI
-            refreshUI();
-            
-            // 同步表單內容
-            document.getElementById('set-name').value = state.name;
-            document.getElementById('set-motto').value = state.motto;
-            document.getElementById('set-status').value = state.status;
-            document.getElementById('set-bio').value = state.bio;
-            document.getElementById('avatar-preview').src = state.avatar;
-            document.getElementById('target-input').value = state.target;
+        const cloudData = snapshot.val();
+        
+        if (cloudData) {
+            // 如果雲端有資料，則同步到本地
+            state = cloudData;
+        } else {
+            // 如果雲端是空的（第一次使用），則將目前的預設 state 上傳到雲端
+            db.ref('mySpaceData').set(state);
+        }
+        
+        // 強制執行 UI 刷新與表單同步
+        syncFormFields();
+        refreshUI();
+    });
+};
+
+// 獨立出來的表單同步函數
+function syncFormFields() {
+    document.getElementById('set-name').value = state.name || "";
+    document.getElementById('set-motto').value = state.motto || "";
+    document.getElementById('set-status').value = state.status || "";
+    document.getElementById('set-bio').value = state.bio || "";
+    document.getElementById('avatar-preview').src = state.avatar || "https://i.imgur.com/8N7mY9R.png";
+    document.getElementById('target-input').value = state.target || 5000;
         }
     });
 };
