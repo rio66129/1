@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="★ My Personal Space ★">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="★ My Personal Space ★">
     <link rel="apple-touch-icon" href="icon.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-<meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database-compat.js"></script>
     <title>★ My Personal Space ★</title>
     <style>
         :root {
@@ -702,6 +702,48 @@
 </div>
 
 <script>
+    // --- Firebase 配置 (請替換成您在控制台拿到的內容) ---
+const firebaseConfig = {
+    apiKey: "AIzaSyAn0PWRB_4tltFunVxxTfne2OpQHleZDZU",
+    authDomain: "saving-d8a25.firebaseapp.com",
+    databaseURL: "https://saving-d8a25-default-rtdb.firebaseio.com",
+    projectId: "saving-d8a25",
+    storageBucket: "saving-d8a25.firebasestorage.app",
+    messagingSenderId: "572809877236",
+    appId: "1:572809877236:web:094dcf9d463a9012c9f0a1",
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// --- 修改原本的 window.onload ---
+window.onload = () => {
+    // 改從 Firebase 讀取資料
+    db.ref('mySpaceData').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            state = data;
+            // 由於是非同步讀取，拿到資料後需手動更新 UI
+            refreshUI();
+            
+            // 同步表單內容
+            document.getElementById('set-name').value = state.name;
+            document.getElementById('set-motto').value = state.motto;
+            document.getElementById('set-status').value = state.status;
+            document.getElementById('set-bio').value = state.bio;
+            document.getElementById('avatar-preview').src = state.avatar;
+            document.getElementById('target-input').value = state.target;
+        }
+    });
+};
+
+// --- 修改原本的 saveAndRefresh 函數 ---
+function saveAndRefresh() {
+    // 1. 同步到 Firebase (這會自動觸發其他端的 window.onload 監聽)
+    db.ref('mySpaceData').set(state);
+    
+    // 2. 本地端 UI 更新
+    refreshUI();
+}
     // 資料結構
     let state = {
         name: "Rio",
