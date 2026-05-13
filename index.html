@@ -703,47 +703,97 @@
 
 <script>
     // --- Firebase 配置 (請替換成您在控制台拿到的內容) ---
+// --- Firebase 配置 ---
 const firebaseConfig = {
     apiKey: "AIzaSyAn0PWRB_4tltFunVxxTfne2OpQHleZDZU",
     authDomain: "saving-d8a25.firebaseapp.com",
-    databaseURL: "https://saving-d8a25-default-rtdb.firebaseio.com",
+    databaseURL: "https://saving-d8a25-default-rtdb.firebaseio.com", // 確保這裡有包含 https://
     projectId: "saving-d8a25",
     storageBucket: "saving-d8a25.firebasestorage.app",
     messagingSenderId: "572809877236",
     appId: "1:572809877236:web:094dcf9d463a9012c9f0a1",
 };
-firebase.initializeApp(firebaseConfig);
+
+// 初始化 Firebase
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 const db = firebase.database();
 
-// --- 修改原本的 window.onload ---
+// 預設資料結構
+let state = {
+    name: "Rio",
+    bio: "Information student & Web lover.",
+    status: "Feeling hopeful ✨",
+    motto: "Keep saving, dreams come true!",
+    avatar: "https://i.imgur.com/8N7mY9R.png",
+    total: 0,
+    target: 5000,
+    options: [
+        {desc: "Coffee", amt: 50},
+        {desc: "Lunch", amt: 100},
+        {desc: "Dinner", amt: 150}
+    ],
+    history: [],
+    visitorCount: 0,
+    blogPosts: [],
+    decoImages: { deco1: "https://i.imgur.com/f0f456.png", deco2: "https://i.imgur.com/f0f3f1.png" },
+    yume: {
+        "char-1": null, "char-2": null, "char-3": null, "char-4": null,
+        "setting-1": null, "setting-2": null, "setting-3": null, "setting-4": null
+    },
+    social: [
+        { name: "Twitter", url: "" }, { name: "TikTok", url: "" },
+        { name: "Instagram", url: "" }, { name: "YouTube", url: "" }
+    ],
+    isPlaying: false,
+    currentSongIndex: 0,
+    songs: [
+        { title: "Beautiful Day", artist: "Your Playlist" },
+        { title: "Dreaming", artist: "Your Playlist" },
+        { title: "Starlight", artist: "Your Playlist" }
+    ]
+};
+
+let currentYumeUploadId = null;
+
+// --- 唯一的 window.onload ---
 window.onload = () => {
+    // 增加訪客數 (僅本地邏輯，稍後會同步)
+    state.visitorCount = (state.visitorCount || 0) + 1;
+
     // 監聽 Firebase 資料
     db.ref('mySpaceData').on('value', (snapshot) => {
         const cloudData = snapshot.val();
-        
         if (cloudData) {
-            // 如果雲端有資料，則同步到本地
             state = cloudData;
         } else {
-            // 如果雲端是空的（第一次使用），則將目前的預設 state 上傳到雲端
+            // 如果雲端沒資料，上傳預設值
             db.ref('mySpaceData').set(state);
         }
-        
-        // 強制執行 UI 刷新與表單同步
         syncFormFields();
+        loadYumeImages();
         refreshUI();
     });
 };
 
-// 獨立出來的表單同步函數
 function syncFormFields() {
     document.getElementById('set-name').value = state.name || "";
     document.getElementById('set-motto').value = state.motto || "";
     document.getElementById('set-status').value = state.status || "";
     document.getElementById('set-bio').value = state.bio || "";
-    document.getElementById('avatar-preview').src = state.avatar || "https://i.imgur.com/8N7mY9R.png";
+    document.getElementById('avatar-preview').src = state.avatar || "";
     document.getElementById('target-input').value = state.target || 5000;
-        }
+}
+
+// --- 修改 saveAndRefresh ---
+function saveAndRefresh() {
+    // 同步到雲端 (不需要再存 localStorage，以雲端為準)
+    db.ref('mySpaceData').set(state);
+    refreshUI();
+}
+
+// ... 以下保留您原本的 showPage, openModal, addMoney, publishPost 等所有函數內容 ...
     });
 };
 
