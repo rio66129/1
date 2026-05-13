@@ -711,6 +711,17 @@
         <button class="pixel-btn" style="background:#fff0f0; width:100%; color:red; border-color:red; margin-top: 10px;" onclick="clearData()">Clear Savings</button>
     </div>
 </div>
+<div class="modal-overlay" id="notice-modal" style="display:none; z-index:9999;">
+    <div class="modal-content" style="max-width: 280px; text-align: center; border: 2px solid var(--dark-pink); padding:0;">
+        <div class="modal-header" style="background: var(--main-pink); padding: 5px; border-bottom: 2px solid var(--dark-pink);">
+            <span style="font-weight:bold; color:#4a4a4a; font-size:12px;">SYSTEM NOTICE</span>
+        </div>
+        <div style="padding: 20px; background: #fff;">
+            <p id="notice-message" style="font-size: 13px; margin-bottom: 15px; color: #4a4a4a; line-height:1.5;"></p>
+            <button class="pixel-btn" onclick="closeModal('notice-modal')" style="width: 80px; font-size:12px; padding:5px;">OK</button>
+        </div>
+    </div>
+</div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
@@ -1061,44 +1072,6 @@
         });
 }
     // 通用功能
-    // 修改 window.onload
-// 確保只保留一個初始化邏輯
-window.onload = () => {
-    // 監聽 Firebase 資料變動
-    onValue(window.dataRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            state = data; // 同步雲端資料
-            
-            // 更新表單欄位內容
-            const fields = {
-                'set-name': state.name,
-                'set-motto': state.motto,
-                'set-status': state.status,
-                'set-bio': state.bio,
-                'target-input': state.target
-            };
-
-            for (let id in fields) {
-                const el = document.getElementById(id);
-                if (el) el.value = fields[id];
-            }
-
-            if (document.getElementById('avatar-preview')) {
-                document.getElementById('avatar-preview').src = state.avatar;
-            }
-            
-            loadYumeImages();
-            refreshUI(); // 這裡最重要：資料回來後立即重新渲染 Quick Add 按鈕
-        }
-    });
-
-    // 訪客數計數（僅執行一次）
-    setTimeout(() => {
-        state.visitorCount = (state.visitorCount || 0) + 1;
-        saveAndRefresh();
-    }, 2000);
-};
 
     function refreshUI() {
         // 側邊欄
