@@ -1023,30 +1023,50 @@ window.onload = () => {
         const song = state.songs[state.currentSongIndex];
         document.getElementById('ipod-song').textContent = song.title;
     }
-
+    function saveAndRefresh() {
+    // 將當前狀態寫入 Firebase
+    window.firebaseSet(window.dataRef, state)
+        .then(() => {
+            refreshUI();
+        })
+        .catch((error) => {
+            console.error("Firebase Update Error:", error);
+        });
+}
     // 通用功能
     // 修改 window.onload
+// 確保只保留一個初始化邏輯
 window.onload = () => {
     // 監聽 Firebase 資料變動
     onValue(window.dataRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            state = data; // 將雲端資料同步至本地 state
+            state = data; // 同步雲端資料
             
-            // 同步表單輸入框
-            document.getElementById('set-name').value = state.name;
-            document.getElementById('set-motto').value = state.motto;
-            document.getElementById('set-status').value = state.status;
-            document.getElementById('set-bio').value = state.bio;
-            document.getElementById('avatar-preview').src = state.avatar;
-            document.getElementById('target-input').value = state.target;
+            // 更新表單欄位內容
+            const fields = {
+                'set-name': state.name,
+                'set-motto': state.motto,
+                'set-status': state.status,
+                'set-bio': state.bio,
+                'target-input': state.target
+            };
+
+            for (let id in fields) {
+                const el = document.getElementById(id);
+                if (el) el.value = fields[id];
+            }
+
+            if (document.getElementById('avatar-preview')) {
+                document.getElementById('avatar-preview').src = state.avatar;
+            }
             
             loadYumeImages();
-            refreshUI(); // 重新渲染畫面
+            refreshUI(); // 這裡最重要：資料回來後立即重新渲染 Quick Add 按鈕
         }
     });
 
-    // 訪客數計算 (建議只在首次載入觸發一次)
+    // 訪客數計數（僅執行一次）
     setTimeout(() => {
         state.visitorCount = (state.visitorCount || 0) + 1;
         saveAndRefresh();
