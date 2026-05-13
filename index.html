@@ -916,7 +916,20 @@ function addNewCategory() {
         showNotice("Error", "Please enter valid info!");
     }
 }
+// 刪除類別功能：改為內部彈窗通知
+function deleteOption(index) {
+    // 獲取即將刪除的項目名稱（用於顯示在通知中）
+    const deletedName = state.options[index].desc;
 
+    // 執行刪除邏輯
+    state.options.splice(index, 1);
+    
+    // 儲存並更新雲端資料
+    saveAndRefresh();
+
+    // 調用您現有的內部彈窗顯示成功訊息
+    showNotice("系統通知", `已成功刪除類別：「${deletedName}」`);
+}
     function addMoney(desc, amt) {
     state.total += amt;
     const now = new Date();
