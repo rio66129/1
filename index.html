@@ -738,14 +738,14 @@
   };
 
   // 初始化 Firebase
-  const app = initializeApp(firebaseConfig);
+ const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  const dataRef = ref(db, 'user_space_data'); // 資料儲存的路徑
+  const dataRef = ref(db, 'user_space_data');
 
-  // 將 Firebase 實例掛載到 window，讓原本的 script 可以存取
   window.db = db;
   window.dataRef = dataRef;
   window.firebaseSet = set;
+  window.onValue = onValue; // 新增這一行，讓下方的腳本可以讀取到
 </script>
 
 <script>
