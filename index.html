@@ -793,38 +793,22 @@
 
     // 修改 window.onload
  window.onload = () => {
-    // 1. 監聽 Firebase 資料
+    // 監聽 Firebase 
     onValue(window.dataRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
-            // 重要：用雲端資料覆蓋本地 state
-            state = data;
+            // 用雲端資料完全覆蓋本地 state
+            state = data; 
+            console.log("Synced from Firebase:", state);
             
-            // 同步所有輸入框內容，避免刷新後 input 變空
-            const fieldMap = {
-                'set-name': state.name,
-                'set-motto': state.motto,
-                'set-status': state.status,
-                'set-bio': state.bio,
-                'target-input': state.target
-            };
-            for (let id in fieldMap) {
-                const el = document.getElementById(id);
-                if (el) el.value = fieldMap[id] || '';
-            }
-
-            // 更新頭像預覽
-            const avatarPre = document.getElementById('avatar-preview');
-            if (avatarPre) avatarPre.src = state.avatar || 'default-avatar.png';
-            
-            loadYumeImages();
-            refreshUI(); // 確保資料到位後才渲染 UI (含 Quick Add 按鈕)
-            console.log("Data synced from Firebase.");
+            // 執行畫面渲染（這會畫出 Quick Add 按鈕與進度條）
+            refreshUI();  
         } else {
-            // 如果雲端完全沒資料，才初始化存入預設值
+            // 如果雲端完全沒資料，代表是第一次使用，存入初始 state
             saveAndRefresh();
         }
     });
+};
 
     // 訪客計數
     setTimeout(() => {
@@ -833,7 +817,7 @@
             saveAndRefresh();
         }
     }, 2000);
-};
+
 
     function showPage(id, btn) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -902,21 +886,22 @@
     }
 
     // Savings 功能
-    function addNewCategory() {
-        const name = document.getElementById('category-name').value.trim();
-        const amount = parseInt(document.getElementById('category-amount').value);
-
-        if (!name || !amount || amount <= 0) {
-            showNotice('Please fill in valid information!');
-            return;
-        }
-
-        state.options.push({desc: name, amt: amount});
-        saveAndRefresh();
-        closeModal('add-category-modal');
-        showNotice('Category added!');
+function addNewCategory() {
+    const name = document.getElementById('new-opt-name').value;
+    const amount = parseInt(document.getElementById('new-opt-amt').value);
+    if (name && !isNaN(amount)) {
+        state.options.push({ desc: name, amt: amount });
+        
+        // 關鍵修改：從 refreshUI() 改為 saveAndRefresh()
+        saveAndRefresh(); 
+        
+        closeModal('add-modal');
+        // 建議加上自定義彈窗提示
+        showNotice("System", "Successfully added!");
+    } else {
+        showNotice("Error", "Please enter valid info!");
     }
-
+}
     function deleteOption(index) {
         state.options.splice(index, 1);
         saveAndRefresh();
@@ -1062,13 +1047,20 @@
         document.getElementById('ipod-song').textContent = song.title;
     }
     function saveAndRefresh() {
-    // 將當前狀態寫入 Firebase
+    // 檢查 Firebase 是否有成功初始化
+    if (typeof window.firebaseSet !== 'function' || !window.dataRef) {
+        console.error("Firebase Set function is missing! Please check your script order.");
+        return;
+    }
+
     window.firebaseSet(window.dataRef, state)
         .then(() => {
-            refreshUI();
+            console.log("Data saved to Firebase!");
+            refreshUI(); // 儲存成功後才更新畫面
         })
         .catch((error) => {
-            console.error("Firebase Update Error:", error);
+            console.error("Firebase Save Error:", error);
+            alert("Save failed: " + error.message);
         });
 }
     // 通用功能
