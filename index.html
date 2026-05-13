@@ -795,19 +795,25 @@
  window.onload = () => {
     // 監聽 Firebase 
     onValue(window.dataRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-            // 用雲端資料完全覆蓋本地 state
-            state = data; 
-            console.log("Synced from Firebase:", state);
-            
-            // 執行畫面渲染（這會畫出 Quick Add 按鈕與進度條）
-            refreshUI();  
-        } else {
-            // 如果雲端完全沒資料，代表是第一次使用，存入初始 state
-            saveAndRefresh();
-        }
-    });
+    const data = snapshot.val();
+    if (data) {
+        // Merge cloud data with local defaults to ensure all arrays exist
+        state = {
+            ...state, // keep defaults
+            ...data,  // overwrite with cloud data
+            // Explicitly ensure arrays exist if they might be missing in DB
+            blogPosts: data.blogPosts || [],
+            options: data.options || [],
+            history: data.history || [],
+            yume: data.yume || state.yume,
+            decoImages: data.decoImages || state.decoImages
+        }; 
+        console.log("Synced from Firebase:", state);
+        refreshUI();  
+    } else {
+        saveAndRefresh();
+    }
+});
 };
 
     // 訪客計數
