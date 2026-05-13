@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="★ My Personal Space ★">
+
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="★ My Personal Space ★">
     <link rel="apple-touch-icon" href="icon.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.x.x/firebase-database-compat.js"></script>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<meta name="mobile-web-app-capable" content="yes">
     <title>★ My Personal Space ★</title>
     <style>
         :root {
@@ -702,109 +702,149 @@
 </div>
 
 <script>
-    // --- Firebase 配置 (請替換成您在控制台拿到的內容) ---
-// --- Firebase 配置 ---
-// 1. Firebase 配置
-const firebaseConfig = {
-    apiKey: "AIzaSyAn0PWRB_4tltFunVxxTfne2OpQHleZDZU",
-    authDomain: "saving-d8a25.firebaseapp.com",
-    databaseURL: "https://saving-d8a25-default-rtdb.firebaseio.com",
-    projectId: "saving-d8a25",
-    storageBucket: "saving-d8a25.firebasestorage.app",
-    messagingSenderId: "572809877236",
-    appId: "1:572809877236:web:094dcf9d463a9012c9f0a1",
-};
+    // 資料結構
+    let state = {
+        name: "Rio",
+        bio: "Information student & Web lover.",
+        status: "Feeling hopeful ✨",
+        motto: "Keep saving, dreams come true!",
+        avatar: "https://i.imgur.com/8N7mY9R.png",
+        total: 0,
+        target: 5000,
+        options: [
+            {desc: "Coffee", amt: 50},
+            {desc: "Lunch", amt: 100},
+            {desc: "Dinner", amt: 150}
+        ],
+        history: [],
+        visitorCount: 0,
+        blogPosts: [],
+        decoImages: {
+            deco1: "https://i.imgur.com/f0f456.png",
+            deco2: "https://i.imgur.com/f0f3f1.png"
+        },
+        yume: {
+            "char-1": null, "char-2": null, "char-3": null, "char-4": null,
+            "setting-1": null, "setting-2": null, "setting-3": null, "setting-4": null
+        },
+        social: [
+            { name: "Twitter", url: "" },
+            { name: "TikTok", url: "" },
+            { name: "Instagram", url: "" },
+            { name: "YouTube", url: "" }
+        ],
+        isPlaying: false,
+        currentSongIndex: 0,
+        songs: [
+            { title: "Beautiful Day", artist: "Your Playlist" },
+            { title: "Dreaming", artist: "Your Playlist" },
+            { title: "Starlight", artist: "Your Playlist" }
+        ]
+    };
 
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = firebase.database();
+    let currentYumeUploadId = null;
 
-// 2. 預設資料狀態
-let state = {
-    name: "Rio",
-    bio: "Information student & Web lover.",
-    status: "Feeling hopeful ✨",
-    motto: "Keep saving, dreams come true!",
-    avatar: "https://i.imgur.com/8N7mY9R.png",
-    total: 0,
-    target: 5000,
-    options: [
-        {desc: "Coffee", amt: 50},
-        {desc: "Lunch", amt: 100},
-        {desc: "Dinner", amt: 150}
-    ],
-    history: [],
-    visitorCount: 0,
-    blogPosts: [],
-    decoImages: { deco1: "https://i.imgur.com/f0f456.png", deco2: "https://i.imgur.com/f0f3f1.png" },
-    yume: {
-        "char-1": null, "char-2": null, "char-3": null, "char-4": null,
-        "setting-1": null, "setting-2": null, "setting-3": null, "setting-4": null
-    },
-    isPlaying: false,
-    currentSongIndex: 0,
-    songs: [
-        { title: "Beautiful Day", artist: "Your Playlist" },
-        { title: "Dreaming", artist: "Your Playlist" },
-        { title: "Starlight", artist: "Your Playlist" }
-    ]
-};
-
-// 3. 頁面初始化
-window.onload = () => {
-    db.ref('mySpaceData').on('value', (snapshot) => {
-        const cloudData = snapshot.val();
-        if (cloudData) {
-            state = cloudData;
-        } else {
-            db.ref('mySpaceData').set(state);
-        }
-        // 增加訪客數並同步
-        state.visitorCount = (state.visitorCount || 0) + 1;
-        db.ref('mySpaceData/visitorCount').set(state.visitorCount);
+    window.onload = () => {
+        const saved = localStorage.getItem('mySpaceData_v6');
+        if(saved) state = JSON.parse(saved);
         
-        syncFormFields();
+        // 初始同步表單
+        document.getElementById('set-name').value = state.name;
+        document.getElementById('set-motto').value = state.motto;
+        document.getElementById('set-status').value = state.status;
+        document.getElementById('set-bio').value = state.bio;
+        document.getElementById('avatar-preview').src = state.avatar;
+        document.getElementById('target-input').value = state.target;
+        
+        // 增加訪客數
+        state.visitorCount = (state.visitorCount || 0) + 1;
+        
         loadYumeImages();
         refreshUI();
-    });
-};
+    };
 
-// 4. 功能函式 (確保這些函式都在全域範圍)
-function showPage(id, btn) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    btn.classList.add('active');
-}
-
-function saveAndRefresh() {
-    db.ref('mySpaceData').set(state);
-    refreshUI();
-}
-
-function addNewCategory() {
-    const name = document.getElementById('category-name').value.trim();
-    const amount = parseInt(document.getElementById('category-amount').value);
-    if (!name || isNaN(amount) || amount <= 0) {
-        alert('Please enter valid data!');
-        return;
+    function showPage(id, btn) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
     }
-    state.options.push({desc: name, amt: amount});
-    saveAndRefresh();
-    closeModal('add-category-modal');
-}
 
-// ... (其餘其它的 closeModal, publishPost, refreshUI 函式請保持不變並放在這裡)
+    // Modal 操作
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+    }
 
-    // 更新本地狀態
-    state.options.push({desc: name, amt: amount});
-    
-    // 同步到 Firebase 並關閉視窗
-    saveAndRefresh(); 
-    closeModal('add-category-modal');
-    alert('類別已成功新增！');
-}
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openNewPostModal() {
+        document.getElementById('post-title').value = '';
+        document.getElementById('post-tags').value = '';
+        document.getElementById('post-content').value = '';
+        openModal('new-post-modal');
+    }
+
+    function openAddCategoryModal() {
+        document.getElementById('category-name').value = '';
+        document.getElementById('category-amount').value = '';
+        openModal('add-category-modal');
+    }
+
+    function openSavingsModal() {
+        openModal('savings-modal');
+    }
+
+    // Blog 功能
+    function publishPost() {
+        const title = document.getElementById('post-title').value.trim();
+        const tags = document.getElementById('post-tags').value.trim().split(',').map(t => t.trim());
+        const content = document.getElementById('post-content').value.trim();
+
+        if (!title || !content) {
+            alert('Title and content are required!');
+            return;
+        }
+
+        const post = {
+            id: Date.now(),
+            title: title,
+            tags: tags,
+            content: content,
+            date: new Date().toLocaleDateString('en-US', {month:'2-digit', day:'2-digit'}),
+            time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
+        };
+
+        state.blogPosts.unshift(post);
+        saveAndRefresh();
+        closeModal('new-post-modal');
+        alert('Post published!');
+    }
+
+    function deletePost(postId) {
+        if (confirm('Delete this post?')) {
+            state.blogPosts = state.blogPosts.filter(p => p.id !== postId);
+            saveAndRefresh();
+        }
+    }
+
+    // Savings 功能
+    function addNewCategory() {
+        const name = document.getElementById('category-name').value.trim();
+        const amount = parseInt(document.getElementById('category-amount').value);
+
+        if (!name || !amount || amount <= 0) {
+            alert('Please fill in valid information!');
+            return;
+        }
+
+        state.options.push({desc: name, amt: amount});
+        saveAndRefresh();
+        closeModal('add-category-modal');
+        alert('Category added!');
+    }
+
     function deleteOption(index) {
         state.options.splice(index, 1);
         saveAndRefresh();
@@ -952,7 +992,7 @@ function addNewCategory() {
 
     // 通用功能
     function saveAndRefresh() {
-       db.ref('mySpaceData').set(state);
+        localStorage.setItem('mySpaceData_v6', JSON.stringify(state));
         refreshUI();
     }
 
