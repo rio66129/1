@@ -170,6 +170,7 @@
     gap: 30px;
 }
 
+
 /* 頂部橫幅與格言 (參考圖 9118) */
 .yume-header {
     text-align: center;
@@ -251,56 +252,6 @@
     color: #666;
     border: 1px dashed #ddd;
 }
-
-        /* iPod 播放器 */
-        .ipod-container { 
-            width: 180px; 
-            margin: 15px auto; 
-            background: #e8e8e8; 
-            border-radius: 40px; 
-            padding: 12px; 
-            box-shadow: inset 0 0 10px rgba(220, 220, 220, 0.8), 0 10px 20px rgba(0,0,0,0.3);
-        }
-        .ipod-screen { 
-            background: #b3b3b3; 
-            border-radius: 8px; 
-            padding: 10px; 
-            margin-bottom: 15px; 
-            text-align: center; 
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .ipod-title { font-size: 10px; font-weight: bold; color:#e8e8e8; margin-bottom: 4px; }
-        .ipod-info { font-size: 9px; color:#e8e8e8; line-height: 1.3; }
-        .ipod-controls { display: flex; justify-content: center; gap: 15px; align-items: center; margin-bottom: 12px; }
-        .ipod-btn { 
-            background: #d4d4d4; 
-            border: 1px solid#e8e8e8; 
-            color: #c1c4be; 
-            width: 32px; 
-            height: 32px; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-        .ipod-btn:hover { background: #e8e8e8; }
-        .ipod-wheel { 
-            width: 160px; 
-            height: 160px; 
-            border-radius: 50%; 
-            background: radial-gradient(circle at 30% 30%,#e8e8e8,#dcdbdb ); 
-            margin: 0 auto; 
-            cursor: pointer;
-            box-shadow: inset 0 2px 8px rgba(94, 94, 94, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #bcbcbc;
-            font-size: 24px;
-        }
 
         /* 按鈕樣式 */
         .pixel-btn { 
@@ -431,10 +382,243 @@
                 padding: 15px;
             }
         }
+
+        /* 固定播放器樣式 */
+.fixed-player {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 75px;
+    /* 使用你網頁的主色調：粉色 */
+    background: linear-gradient(to bottom, #ffebf5, #ffcce6); 
+    backdrop-filter: blur(8px);
+    border-top: 2px solid #ff85c0; /* var(--dark-pink) */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    z-index: 1000;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 10px rgba(255, 133, 192, 0.2);
+}
+
+.player-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: #ff85c0; /* 深粉色 */
+    transition: transform 0.1s;
+}
+
+.player-btn:active { transform: scale(0.9); }
+
+.player-center {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    margin: 0 40px;
+}
+
+.player-info { width: 100%; }
+
+.song-detail {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff85c0;
+    margin-bottom: 8px;
+    font-family: 'Unifont';
+}
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    color: #666;
+}
+
+/* 進度條與音量條美化 */
+#progress-bar, #volume-control {
+    flex: 1;
+    height: 6px;
+    accent-color: #ff85c0; /* 拉條變更為粉色 */
+    cursor: pointer;
+}
+
+#volume-control { max-width: 100px; }
+
+.player-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ff85c0;
+}
+/* 手機版適應 */
+@media (max-width: 768px) {
+    .player-controls-right { display: none; }
+    .player-controls-left { gap: 5px; }
+    .player-btn { font-size: 16px; }
+
+    /* 確保頁面內容不會被底部播放器遮住 */
+body {
+    padding-bottom: 90px !important; 
+}
+
+/* 針對行動裝置微調 */
+@media (max-width: 768px) {
+    body {
+        padding-bottom: 100px !important;
+    }
+} 
+
+/* 修正 Blog Post 卡片與圖片格式 */
+.blog-post {
+    background: #fff;
+    border: 1px solid var(--dark-pink);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 2px 2px 0px var(--main-pink);
+    overflow: hidden; /* 防止圖片溢出 */
+}
+
+.blog-post img {
+    width: 100%;
+    max-height: 250px; /* 限制圖片高度，避免拉長 */
+    object-fit: cover; /* 保持比例裁剪 */
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.blog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.full-screen-view {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff5f8; /* 配合您的粉色系 */
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--dark-pink);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.edit-content .input-group {
+    margin-bottom: 20px;
+}
+
+.edit-content label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: var(--dark-pink);
+}
+
+.edit-content input, .edit-content textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.back-btn, .save-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.back-btn { background: #eee; }
+.save-btn { background: var(--dark-pink); color: white; }
+
+/* 隱藏原始檔案輸入框 */
+.hidden-file-input {
+    opacity: 0;
+position: absolute; 
+}
+
+/* 統一的上傳按鈕外觀 (繼承 pixel-btn 樣式) */
+.upload-label {
+    /* 必須設定為 inline-block，否則邊框和內距會失效 */
+    display: inline-block !important; 
+    background-color: #ffffff !important;
+    
+    /* 直接寫死顏色 code 避免變數讀取失敗 */
+    border: 2px solid #ff85c0 !important; 
+    
+    padding: 8px 16px !important;
+    border-radius: 12px !important;
+    
+    /* 修正粗體與文字 */
+    font-weight: 800 !important; 
+    color: #4a4a4a !important;
+    font-size: 14px !important;
+    
+    cursor: pointer !important;
+    text-align: center !important;
+    margin: 5px 0 !important;
+}
+
+
+.upload-label:hover {
+    background: var(--main-pink);
+}
+
+.upload-label::before {
+    content: "📁 "; /* 加入小圖示 */
+}
+
+input[type="file"].hidden-file-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+}
     </style>
 </head>
 <body>
-
+<div class="fixed-player">
+    <div class="player-controls-left">
+        <button class="player-btn" onclick="togglePlay()" id="play-btn-fixed">▶</button>
+    </div>
+    
+    <div class="player-center">
+        <div class="player-info">
+            <div class="song-detail">
+                <span id="current-song-title">等待上傳音樂...</span>
+            </div>
+            <div class="progress-container">
+                <span id="current-time">0:00</span>
+                <input type="range" id="progress-bar" value="0" max="100" oninput="seekAudio(this.value)">
+                <span id="duration-time">0:00</span>
+            </div>
+        </div>
+    </div>
+    <audio id="main-audio"></audio>
+</div>
 <div class="desktop-wrapper">
     <nav>
         <button class="nav-btn active" onclick="showPage('home', this)">★ Home</button>
@@ -456,8 +640,8 @@
             
             <!-- Photo Wall -->
             <div class="photo-wall">
-                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img" onclick="showNotice('Edit in Settings →')">
-                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img" onclick="showNotice('Edit in Settings →')">
+                <img id="deco1" src="https://i.imgur.com/f0f456.png" class="deco-img"">
+                <img id="deco2" src="https://i.imgur.com/f0f3f1.png" class="deco-img"">
             </div>
         </aside>
 
@@ -474,10 +658,6 @@
                             <h4>Hi! I'm Rio</h4>
                             <p>This is my personal space where I share my thoughts, dreams, and daily savings journey.</p>
                         </div>
-                        <div class="status-item">
-                            <span class="status-label">Status:</span>
-                            <span id="home-status">Feeling hopeful ✨</span>
-                        </div>
                     </div>
 
                     <!-- 右上區 - 時間倒數 -->
@@ -486,7 +666,6 @@
     <div style="text-align: center; padding: 10px 0;">
         <div id="countdown-container" style="display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Courier New', monospace; padding: 10px 0;">
     </div>
-        <p style="font-size: 10px; color: #888; margin-top: 10px;">until next Sunday ✨</p>
     </div>
 </div>
 
@@ -495,6 +674,7 @@
     <div id="intro-display" style="font-size: 12px; line-height: 1.6; white-space: pre-wrap;">
         </div>
 </div>
+
 
                     <!-- 左下區 - 最新儲蓄進度 -->
                     <div class="section-box">
@@ -515,7 +695,7 @@
                     <!-- 右下區 - 最新 Blog -->
                     <div class="section-box">
                         <div class="section-title">✦ Latest Blog ✦</div>
-                        <div style="font-size: 12px; line-height: 1.6;">
+                        <div id="last-blog-content"style="font-size: 12px; line-height: 1.6;">
                             <div style="margin-bottom: 8px;">
                                 <span class="blog-tag">Life</span>
                                 <b style="color: var(--dark-pink);">Welcome to v6!</b>
@@ -525,25 +705,7 @@
                     </div>
                 </div>
 
-                <!-- iPod 播放器 -->
-                <div style="margin-top: 30px;">
-                    <h3 style="color: var(--dark-pink); text-align: center;">♫ Now Playing ♫</h3>
-                    <div class="ipod-container">
-                        <div class="ipod-screen">
-                            <div class="ipod-title">Now Playing</div>
-                            <div class="ipod-info">
-                                <div id="ipod-song">Beautiful Day</div>
-                                <div style="font-size: 8px; color: #666;">Your Playlist</div>
-                            </div>
-                        </div>
-                        <div class="ipod-controls">
-                            <button class="ipod-btn" onclick="prevSong()">⏮</button>
-                            <button class="ipod-btn" onclick="togglePlay()" id="play-btn">▶</button>
-                            <button class="ipod-btn" onclick="nextSong()">⏭</button>
-                        </div>
-                        <div class="ipod-wheel">♫</div>
-                    </div>
-                </div>
+               
             </div>
 
             <!-- BLOG 頁面 -->
@@ -557,7 +719,7 @@
 
             <!-- YUME 頁面 -->
             <div id="yume" class="page">
-                <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">✨ Yume ✨</h2>
+                <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">✦ Yume ✦</h2>
                 
                 <div class="yume-grid">
                     <!-- 左邊 - 角色 -->
@@ -585,7 +747,7 @@
 
                     <!-- 右邊 - 設定 -->
                     <div class="yume-section">
-                        <div class="yume-section-title">⚙️ Settings</div>
+                        <div class="yume-section-title">✦ Settings</div>
                         <div id="yume-settings">
                             <div class="yume-card" onclick="uploadYumeImage('setting-1')">
                                 <div class="yume-img" id="setting-1" style="background: #f0f0f0; display: flex; align-items: center; justify-content: center;">📸</div>
@@ -608,7 +770,8 @@
                 </div>
 
                 <!-- 隱藏的檔案輸入 -->
-                <input type="file" id="yume-file-input" accept="image/*" style="display: none;" onchange="handleYumeUpload()">
+                <input type="file" id="yume-file-input" accept="image/*" style="opacity: 0;
+position: absolute;;" onchange="handleYumeUpload()">
             </div>
 
             <!-- SAVINGS 頁面 -->
@@ -645,32 +808,34 @@
 
             <!-- SETTINGS 頁面 -->
             <div id="settings" class="page">
-                <h3>🛠️ Profile Settings</h3>
+                 <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">✦ Profile setting ✦</h2>
                 <div class="blog-post">
-                    <label style="font-size:12px; font-weight:bold;">Display Name</label>
+                    <label style="font-size:12px; font-weight:bold;">Name</label>
                     <input type="text" id="set-name" class="input-box">
-                    
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Motto</label>
-                    <input type="text" id="set-motto" class="input-box" placeholder="Enter your motto...">
+                
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Avatar</label>
+                   <label ="avatar-file" class="upload-label">Choose Avatar</label>
+                   <input type="file" id="avatar-file" accept="image/*" onchange="handleAvatarUpload()" class="hidden-file-input">
+                    <img id="avatar-preview" src=" " style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px;">
 
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Status (Home page)</label>
-                    <input type="text" id="set-status" class="input-box" placeholder="e.g., Feeling hopeful ✨">
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 1 </label>
+                    <label for="deco1-file" class="upload-label">Choose Photo 1</label>
+                    <label for="deco2-file" class="upload-label">Choose Photo 2</label>
+                    <input type="file" id="deco2-file" accept="image/*" onchange="handleDecoUpload('deco2')" class="hidden-file-input">
 
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Avatar (300x300px)</label>
-                    <input type="file" id="avatar-file" accept="image/*" onchange="handleAvatarUpload()" class="input-box">
-                    <img id="avatar-preview" src="https://i.imgur.com/8N7mY9R.png" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px;">
-
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 1 (100x100px)</label>
-                    <input type="file" id="deco1-file" accept="image/*" onchange="handleDecoUpload('deco1')" class="input-box">
-
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 2 (100x100px)</label>
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 2 </label>
                     <input type="file" id="deco2-file" accept="image/*" onchange="handleDecoUpload('deco2')" class="input-box">
 
                     <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">About Me</label>
                     <textarea id="set-bio" class="textarea-box" rows="3"></textarea>
                      <p style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Edit Introduction:</p>
                     <textarea id="intro-input" style="width: 100%; height: 80px; padding: 5px; border-radius: 5px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none;"></textarea>
-  
+
+                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Upload Music (MP3)</label>
+                    <label for="music-file" class="upload-label">Upload Music (MP3)</label>
+                    <input type="file" id="music-file" accept="audio/mp3" onchange="handleMusicUpload()" class="hidden-file-input">
+                    <p id="music-status" style="font-size: 10px; color: #888;">No song uploaded</p>
+
                     <button class="pixel-btn" style="margin-top:10px; width:100%;" onclick="saveProfile()">Save Changes</button>
                 
                     <div style="margin-bottom: 15px;">
@@ -685,9 +850,10 @@
 <div class="modal-overlay" id="new-post-modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>✍️ New Post</h3>
+            <h3>✦ New Post ✦</h3>
             <span class="close-btn" onclick="closeModal('new-post-modal')">×</span>
         </div>
+
         <label>Title:</label>
         <input type="text" id="post-title" class="input-box" placeholder="Post title...">
         
@@ -696,6 +862,10 @@
         
         <label style="margin-top: 10px; display: block;">Content:</label>
         <textarea id="post-content" class="textarea-box" rows="5" placeholder="Write your post..."></textarea>
+        
+        <label style="margin-top: 10px; display: block;">Post Image:</label>
+        <label for="blog-image-input" class="upload-label" style="width: 100%; box-sizing: border-box;">Select Image</label>
+        <input type="file" id="blog-image-input" accept="image/*" class="hidden-file-input">
         
         <button class="pixel-btn" style="margin-top: 15px; width: 100%; background: var(--main-pink); color: white; border-color: var(--dark-pink);" onclick="publishPost()">Publish</button>
     </div>
@@ -709,10 +879,10 @@
             <span class="close-btn" onclick="closeModal('add-category-modal')">×</span>
         </div>
         <label>Category Name:</label>
-        <input type="text" id="category-name" class="input-box" placeholder="e.g., Coffee">
+        <input type="text" id="category-name" class="input-box" placeholder="text">
         
         <label style="margin-top: 10px; display: block;">Amount:</label>
-        <input type="number" id="category-amount" class="input-box" placeholder="e.g., 50">
+        <input type="number" id="category-amount" class="input-box" placeholder="50">
         
         <button class="pixel-btn" style="margin-top: 15px; width: 100%; background: var(--main-pink); color: white; border-color: var(--dark-pink);" onclick="addNewCategory()">Add</button>
     </div>
@@ -733,17 +903,31 @@
 <div class="modal-overlay" id="savings-modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>⚙️ Savings Settings</h3>
+            <h3>✦ Saving Setting ✦</h3>
             <span class="close-btn" onclick="closeModal('savings-modal')">×</span>
         </div>
-        <label>Target Amount:</label>
-        <input type="number" id="target-input" class="input-box" onchange="updateSavingsTarget()">
         
-        <label style="margin-top: 10px; display: block;">Manage Categories (Click × to delete):</label>
+        <label>Target Amount:</label>
+        <input type="number" id="target-input" class="input-box">
+
+        <label style="margin-top: 10px; display: block;">Savings Motto:</label>
+        <input type="text" id="target-motto" class="input-box" placeholder="Enter your savings motto...">
+        
+        <button class="pixel-btn" style="margin-top: 10px; width: 100%; background: var(--main-pink); color: white; border-color: var(--dark-pink);" onclick="updateSavingsSettings()">Save Settings</button>
+
+        <label style="margin-top: 20px; display: block;">Manage Categories (Click × to delete):</label>
         <div id="delete-list" style="max-height:150px; overflow-y:auto; border:1px solid #eee; padding: 10px; margin-bottom:10px; border-radius: 5px;"></div>
         
         <button class="pixel-btn" style="background:#fff0f0; width:100%; color:red; border-color:red; margin-top: 10px;" onclick="clearData()">Clear Savings</button>
     </div>
+</div>
+
+<div class="modal-overlay" id="post-detail-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="detail-title">Post Detail</h3>
+            <span class="close-btn" onclick="closeModal('post-detail-modal')">×</span>
+        </div>
 </div>
 
 <script type="module">
@@ -775,44 +959,38 @@
 <script>
     // 資料結構
     let state = {
-        name: "Rio",
-        bio: "Information student & Web lover.",
-        status: "Feeling hopeful ✨",
+        name: "Name",
+        bio: "Hello!",
         motto: "Keep saving, dreams come true!",
-        avatar: "https://i.imgur.com/8N7mY9R.png",
+        avatar: " ",
         total: 0,
-        target: 5000,
+        target: 1000,
         options: [
-            {desc: "Coffee", amt: 50},
-            {desc: "Lunch", amt: 100},
-            {desc: "Dinner", amt: 150}
+            {desc: "option 1", amt: 50},
+            {desc: "option 2", amt: 100},
+            {desc: "option 3", amt: 150}
         ],
         history: [],
         blogPosts: [],
         decoImages: {
-            deco1: "https://i.imgur.com/f0f456.png",
-            deco2: "https://i.imgur.com/f0f3f1.png"
+            deco1: " ",
+            deco2: " "
         },
         intro: "",
+
+
         yume: {
             "char-1": null, "char-2": null, "char-3": null, "char-4": null,
             "setting-1": null, "setting-2": null, "setting-3": null, "setting-4": null
         },
-        social: [
-            { name: "Twitter", url: "" },
-            { name: "TikTok", url: "" },
-            { name: "Instagram", url: "" },
-            { name: "YouTube", url: "" }
-        ],
         isPlaying: false,
         currentSongIndex: 0,
-        songs: [
-            { title: "Beautiful Day", artist: "Your Playlist" },
-            { title: "Dreaming", artist: "Your Playlist" },
-            { title: "Starlight", artist: "Your Playlist" }
-        ]
+        
+        musicUrl: null,
+        songTitle: "None",
     };
 
+    const audio = document.getElementById('main-audio');
     let currentYumeUploadId = null;
 
     // 修改 window.onload
@@ -878,12 +1056,15 @@ function updateCountdown() {
     }
 }
 
-    function showPage(id, btn) {
+ function showPage(id, btn) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        btn.classList.add('active');
+        const targetPage = document.getElementById(id);
+        if (targetPage) targetPage.classList.add('active');
+        if (btn) btn.classList.add('active');
     }
+
+
 
     // Modal 操作
     function openModal(modalId) {
@@ -891,8 +1072,20 @@ function updateCountdown() {
     }
 
     function closeModal(modalId) {
-        document.getElementById(modalId).classList.remove('active');
+    const modal = document.getElementById(modalId);
+    // Add this check to prevent the crash if the ID is missing
+    if (!modal) {
+        console.warn(`Modal with ID ${modalId} not found.`);
+        return;
     }
+    
+    modal.classList.remove('active');
+    
+    // Add safety check here too
+    if (modalId === 'post-detail-modal') {
+        modal.style.display = 'none';
+    }
+}
 
     function openNewPostModal() {
         document.getElementById('post-title').value = '';
@@ -907,26 +1100,45 @@ function updateCountdown() {
         openModal('add-category-modal');
     }
 
-    function openSavingsModal() {
-        openModal('savings-modal');
-    }
+    // 整合目標金額與 Motto 的儲存
+function updateSavingsSettings() {
+    const newTarget = parseInt(document.getElementById('target-input').value);
+    const newMotto = document.getElementById('target-motto').value;
+
+    state.target = !isNaN(newTarget) ? newTarget : state.target;
+    state.motto = newMotto || state.motto;
+
+    saveAndRefresh();
+    closeModal('savings-modal');
+    showNotice("Success", "Savings settings updated!");
+}
+
+// 修改開啟 Modal 時的初始值賦值
+function openSavingsModal() {
+    document.getElementById('target-input').value = state.target;
+    document.getElementById('target-motto').value = state.motto;
+    openModal('savings-modal');
+} 
 
     // Blog 功能
     function publishPost() {
-        const title = document.getElementById('post-title').value.trim();
-        const tags = document.getElementById('post-tags').value.trim().split(',').map(t => t.trim());
-        const content = document.getElementById('post-content').value.trim();
+    const title = document.getElementById('post-title').value.trim();
+    const tags = document.getElementById('post-tags').value.trim().split(',').map(t => t.trim());
+    const content = document.getElementById('post-content').value.trim();
+    const imageFile = document.getElementById('blog-image-input').files[0]; // 獲取圖片檔案
 
-        if (!title || !content) {
-            showNotice('Title and content are required!');
-            return;
-        }
+    if (!title || !content) {
+        showNotice('Title and content are required!', '');
+        return;
+    }
 
+    const processPost = (imageData) => {
         const post = {
             id: Date.now(),
             title: title,
             tags: tags,
             content: content,
+            image: imageData, // 新增圖片欄位
             date: new Date().toLocaleDateString('en-US', {month:'2-digit', day:'2-digit'}),
             time: new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'})
         };
@@ -934,8 +1146,18 @@ function updateCountdown() {
         state.blogPosts.unshift(post);
         saveAndRefresh();
         closeModal('new-post-modal');
-        showNotice('Post published!');
+        showNotice('Post published!', '');
+    };
+
+    // 如果有圖片，先讀取圖片再儲存
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = (e) => processPost(e.target.result);
+        reader.readAsDataURL(imageFile);
+    } else {
+        processPost(null); // 沒圖片則傳入 null
     }
+}
 
     function deletePost(postId) {
         if (confirm('Delete this post?')) {
@@ -981,7 +1203,7 @@ function deleteOption(index) {
     saveAndRefresh();
 
     // 調用您現有的內部彈窗顯示成功訊息
-    showNotice("系統通知", `已成功刪除類別：「${deletedName}」`);
+    showNotice("Notice", `Delete Success：「${deletedName}」`);
 }
     function addMoney(desc, amt) {
     state.total += amt;
@@ -1015,62 +1237,46 @@ function deleteOption(index) {
         }
     }
 
-    // 檔案上傳
-    function handleAvatarUpload() {
-        const file = document.getElementById('avatar-file').files[0];
-        if (file) {
-            if (file.size > 500000) {
-                showNotice('File too large! Max 500KB');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                state.avatar = e.target.result;
-                document.getElementById('avatar-preview').src = state.avatar;
-                saveAndRefresh();
-            };
-            reader.readAsDataURL(file);
-        }
+    // 解除限制後的頭像上傳
+function handleAvatarUpload() {
+    const file = document.getElementById('avatar-file').files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            state.avatar = e.target.result;
+            document.getElementById('avatar-preview').src = state.avatar;
+            saveAndRefresh();
+        };
+        reader.readAsDataURL(file);
     }
+}
 
-    function handleDecoUpload(decoId) {
-        const file = document.getElementById(decoId + '-file').files[0];
-        if (file) {
-            if (file.size > 300000) {
-                showNotice('File too large! Max 300KB');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                state.decoImages[decoId] = e.target.result;
-                saveAndRefresh();
-            };
-            reader.readAsDataURL(file);
-        }
+// 解除限制後的裝飾圖上傳
+function handleDecoUpload(decoId) {
+    const file = document.getElementById(decoId + '-file').files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            state.decoImages[decoId] = e.target.result;
+            saveAndRefresh();
+        };
+        reader.readAsDataURL(file);
     }
+}
 
-    function uploadYumeImage(id) {
-        currentYumeUploadId = id;
-        document.getElementById('yume-file-input').click();
+// 解除限制後的 Yume 上傳
+function handleYumeUpload() {
+    const file = document.getElementById('yume-file-input').files[0];
+    if (file && currentYumeUploadId) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            state.yume[currentYumeUploadId] = e.target.result;
+            loadYumeImages();
+            saveAndRefresh();
+        };
+        reader.readAsDataURL(file);
     }
-
-    function handleYumeUpload() {
-        const file = document.getElementById('yume-file-input').files[0];
-        if (file && currentYumeUploadId) {
-            if (file.size > 1000000) {
-                showNotice('File too large! Max 1MB');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                state.yume[currentYumeUploadId] = e.target.result;
-                loadYumeImages();
-                saveAndRefresh();
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
+}
     function loadYumeImages() {
         Object.keys(state.yume).forEach(key => {
             if (state.yume[key]) {
@@ -1086,8 +1292,6 @@ function deleteOption(index) {
     // 請找到並替換為以下內容
 function saveProfile() {
     state.name = document.getElementById('set-name').value;
-    state.motto = document.getElementById('set-motto').value;
-    state.status = document.getElementById('set-status').value;
     state.bio = document.getElementById('set-bio').value;
     
     // 獲取 Introduction 內容
@@ -1099,36 +1303,7 @@ function saveProfile() {
 }
 
 
-    // Social Links
-    function openSocialLink(index) {
-        const url = state.social[index].url;
-        if (url) {
-            window.open(url, '_blank');
-        } else {
-            alershowNoticet('Social link not set. Edit in Settings.');
-        }
-    }
-
-    // iPod 播放器
-    function togglePlay() {
-        state.isPlaying = !state.isPlaying;
-        document.getElementById('play-btn').textContent = state.isPlaying ? '⏸' : '▶';
-    }
-
-    function nextSong() {
-        state.currentSongIndex = (state.currentSongIndex + 1) % state.songs.length;
-        updateSongDisplay();
-    }
-
-    function prevSong() {
-        state.currentSongIndex = (state.currentSongIndex - 1 + state.songs.length) % state.songs.length;
-        updateSongDisplay();
-    }
-
-    function updateSongDisplay() {
-        const song = state.songs[state.currentSongIndex];
-        document.getElementById('ipod-song').textContent = song.title;
-    }
+    
     function saveAndRefresh() {
     // 檢查 Firebase 是否有成功初始化
     if (typeof window.firebaseSet !== 'function' || !window.dataRef) {
@@ -1143,7 +1318,7 @@ function saveProfile() {
         })
         .catch((error) => {
             console.error("Firebase Save Error:", error);
-            alert("Save failed: " + error.message);
+            onclick("Save failed: " + error.message);
         });
 }
     // 通用功能
@@ -1156,10 +1331,10 @@ function saveProfile() {
         document.getElementById('deco1').src = state.decoImages.deco1;
         document.getElementById('deco2').src = state.decoImages.deco2;
 
-        // HOME 頁面
-        document.getElementById('home-status').innerText = state.status;
-        document.getElementById('motto-display').innerText = `"${state.motto}"`;
-
+         document.getElementById('current-song-title').textContent = state.songTitle;
+    if (state.musicUrl && audio.src !== state.musicUrl) {
+        audio.src = state.musicUrl;
+    }
         // 儲蓄進度
         const p = state.target > 0 ? Math.min(100, (state.total / state.target) * 100).toFixed(1) : 0;
         document.getElementById('p-text').innerText = p + '%';
@@ -1171,16 +1346,43 @@ function saveProfile() {
         document.getElementById('home-p-target').innerText = '$' + state.target;
 
         // Blog 列表
-        const blogContainer = document.getElementById('blog-posts-container');
-        blogContainer.innerHTML = state.blogPosts.map(post => `
-            <div class="blog-post">
-                <button class="blog-delete" onclick="deletePost(${post.id})">Delete</button>
-                <span class="blog-date">${post.date} ${post.time}</span><br>
-                ${post.tags.map(tag => `<span class="blog-tag">${tag}</span>`).join('')}
-                <h4>${post.title}</h4>
-                <p style="font-size:13px;">${post.content}</p>
+         // --- Blog 列表更新邏輯 ---
+const blogContainer = document.getElementById('blog-posts-container');
+if (blogContainer) {
+    blogContainer.innerHTML = state.blogPosts.map(post => `
+        <div class="blog-post" style="cursor:default;">
+            <div class="blog-header">
+                <span class="blog-date">${post.date} ${post.time}</span>
+                <button class="blog-delete" onclick="deletePost(${post.id}); event.stopPropagation();">Delete</button>
             </div>
-        `).join('');
+            ${post.image ? `<img src="${post.image}" style="width:100%; border-radius:8px; margin-bottom:10px; max-height:250px; object-fit:cover;">` : ''}
+            
+            <div style="margin-bottom: 8px;">
+                ${(post.tags || []).map(t => `<span class="blog-tag">${t}</span>`).join('')}
+            </div>
+
+            <h3 style="margin:0; color:var(--dark-pink);">${post.title}</h3>
+            <p style="font-size:14px; line-height:1.6; color:#4a4a4a; white-space:pre-wrap; margin-top:10px;">${post.content}</p>
+        </div>
+    `).join('');
+}
+
+// --- Latest Blog (Home) 更新邏輯 ---
+const lastBlogContent = document.getElementById('last-blog-content');
+if (state.blogPosts && state.blogPosts.length > 0) {
+    const lastPost = state.blogPosts[0];
+    lastBlogContent.innerHTML = `
+        <div style="cursor:default;">
+            <div style="margin-bottom: 5px;">
+                ${(lastPost.tags || []).map(t => `<span class="blog-tag">${t}</span>`).join('')}
+            </div>
+            ${lastPost.image ? `<img src="${lastPost.image}" style="width:100%; border-radius:4px; margin-bottom:8px; max-height:100px; object-fit:cover;">` : ''}
+            <div style="font-weight:bold; font-size:14px; color:var(--dark-pink);">${lastPost.title}</div>
+            <div style="font-size:12px; color:gray;">${lastPost.date}</div>
+        </div>
+    `;
+}
+
 
         // Quick options - Using event listeners for safety
         const optContainer = document.getElementById('quick-options');
@@ -1200,7 +1402,6 @@ function saveProfile() {
     if (introDisplay) {
         introDisplay.innerText = state.intro || "Welcome to my space!";
     }
-    
     // 更新 Settings 裡的輸入框，確保文字同步
     const introInput = document.getElementById('intro-input');
     if (introInput) {
@@ -1238,11 +1439,104 @@ function saveProfile() {
         }
     }
 
+
     function showNotice(title, message) {
     document.getElementById('notice-title').innerText = title;
     document.getElementById('notice-message').innerText = message;
     openModal('notice-modal');
 }
+
+// 處理音樂上傳
+function handleMusicUpload() {
+    const file = document.getElementById('music-file').files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            state.musicUrl = e.target.result;
+            state.songTitle = file.name.replace('.mp3', '');
+            document.getElementById('music-status').innerText = "Uploaded: " + state.songTitle;
+            saveAndRefresh();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// 播放/暫停控制 (覆蓋原本的 togglePlay)
+function togglePlay() {
+    if (!state.musicUrl) return showNotice("Notice", "Please upload a song in Settings first!");
+    
+    if (audio.src !== state.musicUrl) {
+        audio.src = state.musicUrl;
+    }
+
+    if (audio.paused) {
+        audio.play();
+        state.isPlaying = true;
+    } else {
+        audio.pause();
+        state.isPlaying = false;
+    }
+    updatePlayerUI();
+}
+
+// 更新播放器 UI
+function updatePlayerUI() {
+    document.getElementById('play-btn-fixed').textContent = state.isPlaying ? '⏸' : '►';
+    document.getElementById('current-song-title').textContent = state.songTitle;
+    
+    // 進度條同步
+    audio.ontimeupdate = () => {
+        const prog = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('progress-bar').value = prog || 0;
+        document.getElementById('current-time').innerText = formatTime(audio.currentTime);
+        document.getElementById('duration-time').innerText = "-" + formatTime(audio.duration - audio.currentTime);
+    };
+}
+
+function formatTime(seconds) {
+    if (isNaN(seconds)) return "0:00";
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return m + ":" + (s < 10 ? "0" + s : s);
+}
+
+// 1. 新增：拉動進度條變更音樂位置
+function seekAudio(value) {
+    const audio = document.getElementById('main-audio');
+    if (audio.duration) {
+        audio.currentTime = (value / 100) * audio.duration;
+    }
+}
+
+// 2. 新增：音量調整
+function setVolume(value) {
+    const audio = document.getElementById('main-audio');
+    audio.volume = value / 100;
+}
+
+// 3. 更新：播放器 UI 與進度同步
+function updatePlayerUI() {
+    const playBtn = document.getElementById('play-btn-fixed');
+    if (playBtn) playBtn.textContent = state.isPlaying ? '⏸' : '▶';
+    
+    const title = document.getElementById('current-song-title');
+    if (title) title.textContent = state.songTitle || "尚未上傳";
+
+
+    const progBar = document.getElementById('progress-bar');
+    
+    audio.ontimeupdate = () => {
+        if (progBar && audio.duration) {
+            // 自動更新進度條位置
+            progBar.value = (audio.currentTime / audio.duration) * 100;
+        }
+        document.getElementById('current-time').innerText = formatTime(audio.currentTime);
+        document.getElementById('duration-time').innerText = formatTime(audio.duration);
+    };
+}
+
+
+
 </script>
 </body>
 </html>
