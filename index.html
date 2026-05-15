@@ -65,11 +65,36 @@
 
         /* Blog 風格組件 */
         .blog-post { border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 20px; position: relative; transition: 0.2s; }
-        .blog-post:hover { border-color: var(--dark-pink); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .blog-date { font-size: 10px; color: #aaa; margin-bottom: 5px; display: block; }
         .blog-tag { background: var(--main-pink); padding: 2px 8px; border-radius: 10px; font-size: 10px; color: white; margin-right: 5px; }
-        .blog-delete { position: absolute; top: 10px; right: 10px; background: #ff6b6b; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 11px; }
+        .blog-header {
+    display: flex;
+    justify-content: space-between; /* 讓時間在左，按鍵在右 */
+    align-items: center;
+    margin-bottom: 15px; /* 與下方圖片或內容隔出距離 */
+}
 
+/* 調整刪除按鈕樣式與間距 */
+.blog-delete {
+    position: relative; /* 取消原本的 absolute，改用相對定位 */
+    top: 0; 
+    right: 0;
+    background: #ff6b6b;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: 0.2s;
+    margin-left: 10px; /* 確保與時間文字有水平間距 */
+}
+
+.blog-delete:hover {
+    background: #ff5252;
+    transform: scale(1.05);
+}
+        
         /* 儲蓄頁面優化 */
         .savings-header { display: flex; justify-content: space-between; align-items: center; }
         .settings-icon { 
@@ -462,16 +487,22 @@
     .player-btn { font-size: 16px; }
 
     /* 確保頁面內容不會被底部播放器遮住 */
+/* 修正全局間距，確保所有頁面內容不被底部播放器遮住 */
 body {
-    padding-bottom: 90px !important; 
+    padding-bottom: 95px !important; /* 播放器高度 75px + 20px 緩衝距離 */
 }
 
-/* 針對行動裝置微調 */
+/* 針對行動裝置微調，因為手機版播放器感官上佔位較大 */
 @media (max-width: 768px) {
     body {
-        padding-bottom: 100px !important;
+        padding-bottom: 110px !important; 
     }
-} 
+}
+
+/* 確保主佈局容器有足夠的底部間隔 */
+.desktop-wrapper {
+    margin-bottom: 20px;
+}
 
 /* 修正 Blog Post 卡片與圖片格式 */
 .blog-post {
@@ -493,12 +524,19 @@ body {
     display: block;
 }
 
-.blog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+
+
+/* 確保圖片下方也有足夠間距 */
+.blog-post img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-top: 10px; /* 與上方 Header 隔開 */
+    margin-bottom: 15px; /* 與下方內文隔開 */
+    display: block;
 }
+
 .full-screen-view {
     position: fixed;
     top: 0;
@@ -649,16 +687,17 @@ input[type="file"].hidden-file-input {
             <!-- HOME 頁面 -->
             <div id="home" class="page active">
                 <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink); margin-bottom: 20px;">★ Welcome ★</h2>
-                
+
                 <div class="home-sections">
-                    <!-- 左上區 - 個人介紹 -->
-                    <div class="section-box">
-                        <div class="section-title">✦ Introduction ✦</div>
-                        <div class="intro-card">
-                            <h4>Hi! I'm Rio</h4>
-                            <p>This is my personal space where I share my thoughts, dreams, and daily savings journey.</p>
-                        </div>
-                    </div>
+        <div class="section-box">
+            <div class="section-title">✦ Introduction ✦</div>
+            <div class="intro-card" style="min-height: 100px;">
+                <h4 id="intro-name" style="margin: 0 0 8px 0; color: var(--dark-pink);">Hi! I'm Rio</h4>
+                <div id="intro-display" style="font-size: 12px; line-height: 1.6; white-space: pre-wrap; color: var(--text-gray);">
+                    This is my personal space where I share my thoughts, dreams, and daily savings journey.
+                </div>
+            </div>
+        </div>
 
                     <!-- 右上區 - 時間倒數 -->
   <div class="section-box">
@@ -669,28 +708,41 @@ input[type="file"].hidden-file-input {
     </div>
 </div>
 
-<div class="section-box">
-    <div class="section-title">✦ Introduction ✦</div>
-    <div id="intro-display" style="font-size: 12px; line-height: 1.6; white-space: pre-wrap;">
-        </div>
-</div>
 
 
                     <!-- 左下區 - 最新儲蓄進度 -->
-                    <div class="section-box">
-                        <div class="section-title">✦ Savings Progress ✦</div>
-                        <div class="progress-bar-bg" style="height: 20px;">
-                            <div id="home-p-bar" class="progress-bar-fill" style="width: 0%;"></div>
-                        </div>
-                        <div class="status-item">
-                            <span>Current:</span>
-                            <span id="home-p-total">$0</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Target:</span>
-                            <span id="home-p-target">$5000</span>
-                        </div>
-                    </div>
+                    <div class="section-box" style="display: flex; flex-direction: column;">
+    <div class="section-title">✦ Savings Progress ✦</div>
+    
+    <div class="intro-card" style="
+        flex: 1; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+        align-items: center; 
+        width: 100%; 
+        box-sizing: border-box; 
+        padding: 15px;
+    ">
+        
+        <div class="progress-bar-bg" style="height: 20px; width: 100%; margin-bottom: 15px;">
+            <div id="home-p-bar" class="progress-bar-fill" style="width: 0%;"></div>
+        </div>
+        
+        <div style="width: 100%; display: flex; flex-direction: column; gap: 8px;">
+            <div class="status-item" style="margin: 0; display: flex; justify-content: space-between; font-size: 13px;">
+                <span style="color: var(--text-gray);">Current:</span>
+                <span id="home-p-total" style="font-weight: bold; color: var(--dark-pink); font-family: 'Courier New', monospace;">$0</span>
+            </div>
+            <div class="status-item" style="margin: 0; display: flex; justify-content: space-between; font-size: 13px;">
+                <span style="color: var(--text-gray);">Target:</span>
+                <span id="home-p-target" style="font-weight: bold; font-family: 'Courier New', monospace;">$5000</span>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
 
                     <!-- 右下區 - 最新 Blog -->
                     <div class="section-box">
@@ -709,13 +761,11 @@ input[type="file"].hidden-file-input {
             </div>
 
             <!-- BLOG 頁面 -->
-            <div id="blog" class="page">
-                <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">★ Blog Posts</h2>
-                
-                <button class="pixel-btn-add" onclick="openNewPostModal()" style="margin-bottom: 20px;">+</button>
-                
-                <div id="blog-posts-container"></div>
-            </div>
+            <div id="blog" class="page" style="margin-bottom: 50px;">
+    <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">★ Blog Posts</h2>
+    <button class="pixel-btn-add" onclick="openNewPostModal()" style="margin-bottom: 20px;">+</button>
+    <div id="blog-posts-container"></div>
+</div>
 
             <!-- YUME 頁面 -->
             <div id="yume" class="page">
@@ -797,51 +847,56 @@ position: absolute;;" onchange="handleYumeUpload()">
                 <div id="quick-options" style="display: flex; flex-wrap: wrap; gap: 8px; margin: 15px 0;"></div>
                 <button class="pixel-btn-add" onclick="openAddCategoryModal()" style="margin-bottom: 20px;">+</button>
 
-                <div class="receipt" style="background: #fff; border: 1px solid #ccc; padding: 20px; font-family: 'Courier New', monospace; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 100%; overflow-x: auto;">
-                    <div style="text-align:center; border-bottom: 1px dashed #000; padding-bottom:5px;">*** HISTORY LOG ***</div>
-                    <div id="receipt-list" style="padding:10px 0; font-size:12px;"></div>
-                    <div style="border-top: 1px solid #000; text-align:right; font-weight:bold; padding-top:5px;">
-                        TOTAL: <span id="receipt-total-amt">$0</span>
-                    </div>
-                </div>
+                <div class="receipt" style="background: #fff; border: 1px solid #ccc; padding: 20px; font-family: 'Courier New', monospace; box-shadow: 0 4px 6px rgba(0,0,0,0.05); max-width: 100%; overflow-x: auto; margin-bottom: 50px;">
+    <div style="text-align:center; border-bottom: 1px dashed #000; padding-bottom:5px;">*** HISTORY LOG ***</div>
+    <div id="receipt-list" style="padding:10px 0; font-size:12px;"></div>
+    <div style="border-top: 1px solid #000; text-align:right; font-weight:bold; padding-top:5px;">
+        TOTAL: <span id="receipt-total-amt">$0</span>
+    </div>
+</div>
             </div>
 
             <!-- SETTINGS 頁面 -->
-            <div id="settings" class="page">
-                 <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">✦ Profile setting ✦</h2>
-                <div class="blog-post">
-                    <label style="font-size:12px; font-weight:bold;">Name</label>
-                    <input type="text" id="set-name" class="input-box">
-                
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Avatar</label>
-                   <label ="avatar-file" class="upload-label">Choose Avatar</label>
-                   <input type="file" id="avatar-file" accept="image/*" onchange="handleAvatarUpload()" class="hidden-file-input">
-                    <img id="avatar-preview" src=" " style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-top: 10px;">
+           <div id="settings" class="page" style="margin-bottom: 50px;">
+    <h2 style="color: var(--dark-pink); border-bottom: 2px solid var(--main-pink);">✦ Profile setting ✦</h2>
+    <div class="blog-post">
+        <label for="set-name" style="font-size:12px; font-weight:bold; display:block; margin-bottom:5px;">Name</label>
+        <input type="text" id="set-name" class="input-box">
+    
+        <label style="font-size:12px; font-weight:bold; margin-top:15px; display:block;">Avatar</label>
+        <label for="avatar-file" class="upload-label" style="display:inline-block; margin-top:5px;">Choose Avatar</label>
+        <input type="file" id="avatar-file" accept="image/*" onchange="handleAvatarUpload()" class="hidden-file-input">
+        
+        <div style="margin-top: 10px;">
+            <img id="avatar-preview" src=" " style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--main-pink);">
+        </div>
 
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 1 </label>
-                    <label for="deco1-file" class="upload-label">Choose Photo 1</label>
-                    <label for="deco2-file" class="upload-label">Choose Photo 2</label>
-                    <input type="file" id="deco2-file" accept="image/*" onchange="handleDecoUpload('deco2')" class="hidden-file-input">
-
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Photo Wall 2 </label>
-                    <input type="file" id="deco2-file" accept="image/*" onchange="handleDecoUpload('deco2')" class="input-box">
-
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">About Me</label>
-                    <textarea id="set-bio" class="textarea-box" rows="3"></textarea>
-                     <p style="font-weight: bold; margin-bottom: 5px; font-size: 14px;">Edit Introduction:</p>
-                    <textarea id="intro-input" style="width: 100%; height: 80px; padding: 5px; border-radius: 5px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none;"></textarea>
-
-                    <label style="font-size:12px; font-weight:bold; margin-top:10px; display:block;">Upload Music (MP3)</label>
-                    <label for="music-file" class="upload-label">Upload Music (MP3)</label>
-                    <input type="file" id="music-file" accept="audio/mp3" onchange="handleMusicUpload()" class="hidden-file-input">
-                    <p id="music-status" style="font-size: 10px; color: #888;">No song uploaded</p>
-
-                    <button class="pixel-btn" style="margin-top:10px; width:100%;" onclick="saveProfile()">Save Changes</button>
-                
-                    <div style="margin-bottom: 15px;">
-
-                </div>
+        <label style="font-size:12px; font-weight:bold; margin-top:15px; display:block;">Photo Wall</label>
+        <div style="display: flex; gap: 10px; margin-top:5px;">
+            <div style="flex: 1;">
+                <label for="deco1-file" class="upload-label" style="display:block; text-align:center;">Photo 1</label>
+                <input type="file" id="deco1-file" accept="image/*" onchange="handleDecoUpload('deco1')" class="hidden-file-input">
             </div>
+            <div style="flex: 1;">
+                <label for="deco2-file" class="upload-label" style="display:block; text-align:center;">Photo 2</label>
+                <input type="file" id="deco2-file" accept="image/*" onchange="handleDecoUpload('deco2')" class="hidden-file-input">
+            </div>
+        </div>
+
+        <label for="set-bio" style="font-size:12px; font-weight:bold; margin-top:15px; display:block;">About Me (Main)</label>
+        <textarea id="set-bio" class="textarea-box" rows="3" style="width:100%; margin-top:5px;"></textarea>
+        
+        <label for="intro-input" style="font-size:12px; font-weight:bold; margin-top:15px; display:block;">Profile Introduction:</label>
+        <textarea id="intro-input" style="width: 100%; height: 80px; padding: 10px; border-radius: 8px; border: 1px solid var(--dark-pink); font-size: 12px; resize: none; margin-top:5px; box-sizing: border-box;"></textarea>
+
+        <label style="font-size:12px; font-weight:bold; margin-top:15px; display:block;">Background Music (MP3)</label>
+        <label for="music-file" class="upload-label" style="display:inline-block; margin-top:5px;">Select MP3 File</label>
+        <input type="file" id="music-file" accept="audio/mp3" onchange="handleMusicUpload()" class="hidden-file-input">
+        <p id="music-status" style="font-size: 10px; color: #888; margin-top:5px;">No song uploaded</p>
+
+        <button class="pixel-btn" style="margin-top:20px; width:100%;" onclick="saveProfile()">Save Changes</button>
+    </div>
+</div>
         </main>
     </div>
 </div>
@@ -1335,6 +1390,11 @@ function saveProfile() {
     if (state.musicUrl && audio.src !== state.musicUrl) {
         audio.src = state.musicUrl;
     }
+
+    const mottoDisplay = document.getElementById('motto-display');
+    if (mottoDisplay) {
+        mottoDisplay.innerText = `"${state.motto}"`;
+    }
         // 儲蓄進度
         const p = state.target > 0 ? Math.min(100, (state.total / state.target) * 100).toFixed(1) : 0;
         document.getElementById('p-text').innerText = p + '%';
@@ -1350,15 +1410,22 @@ function saveProfile() {
 const blogContainer = document.getElementById('blog-posts-container');
 if (blogContainer) {
     blogContainer.innerHTML = state.blogPosts.map(post => `
-        <div class="blog-post" style="cursor:default;">
-            <div class="blog-header">
-                <span class="blog-date">${post.date} ${post.time}</span>
+        <div class="blog-post" style="cursor:default; margin-bottom: 20px; border: 1px solid #eee; padding: 15px; border-radius: 12px;">
+            <div class="blog-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span class="blog-date" style="font-size: 12px; color: #888;">${post.date} ${post.time}</span>
                 <button class="blog-delete" onclick="deletePost(${post.id}); event.stopPropagation();">Delete</button>
             </div>
-            ${post.image ? `<img src="${post.image}" style="width:100%; border-radius:8px; margin-bottom:10px; max-height:250px; object-fit:cover;">` : ''}
+            
+            ${post.image ? `
+                <div style="width: 100%; background: #f4f4f4; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                    <img src="${post.image}" 
+                         style="max-width: 100%; max-height: 350px; width: auto; height: auto; object-fit: contain; display: block;" 
+                         alt="Blog post image">
+                </div>
+            ` : ''}
             
             <div style="margin-bottom: 8px;">
-                ${(post.tags || []).map(t => `<span class="blog-tag">${t}</span>`).join('')}
+                ${(post.tags || []).map(t => `<span class="blog-tag" style="margin-right: 5px; font-size: 12px;">${t}</span>`).join('')}
             </div>
 
             <h3 style="margin:0; color:var(--dark-pink);">${post.title}</h3>
@@ -1366,7 +1433,6 @@ if (blogContainer) {
         </div>
     `).join('');
 }
-
 // --- Latest Blog (Home) 更新邏輯 ---
 const lastBlogContent = document.getElementById('last-blog-content');
 if (state.blogPosts && state.blogPosts.length > 0) {
